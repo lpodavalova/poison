@@ -40,7 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\DeviceCollection.cs" />
     <Compile Include="Model\Generator.cs" />
+    <Compile Include="Model\GeneratorCollection.cs" />
+    <Compile Include="Model\Model.cs" />
+    <Compile Include="Model\Queue.cs" />
+    <Compile Include="Model\QueueCollection.cs" />
     <Compile Include="Model\TransactHandler.cs" />
     <Compile Include="Stochastic\IRandom.cs" />
     <Compile Include="Stochastic\Random.cs" />
@@ -48,7 +53,7 @@
     <Compile Include="Stochastic\Normal.cs" />
     <Compile Include="Stochastic\Uniform.cs" />
     <Compile Include="Model\Device.cs" />
-    <Compile Include="Model\Types\DeviceState.cs" />
+    <Compile Include="Model\Enums\DeviceState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Model\Transact.cs" />
   </ItemGroup>

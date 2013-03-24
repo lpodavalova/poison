@@ -5,5 +5,5 @@ using System.Text;
 
 namespace Poison.Model
 {
-    public delegate void TransactHandler(Transact transact);
+    public delegate void TransactHandler(Model model, Transact transact);
 }

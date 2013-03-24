@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Poison.Model.Enums;
 
 namespace Poison.Model
 {
-    public class Device
+    public class Queue
     {
         public Model Model
         {
@@ -14,18 +13,12 @@ namespace Poison.Model
             internal set;
         }
 
-        public DeviceState State
-        {
-            get;
-            private set;
-        }
-
-        public void Seize(Transact transact)
+        public void Enqueue(Transact transact)
         {
             throw new NotImplementedException();
         }
 
-        public void Release(Transact transact)
+        public void Dequeue(Transact transact)
         {
             throw new NotImplementedException();
         }

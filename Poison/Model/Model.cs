@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Poison.Stochastic;
+using Poison.Collections;
 
 namespace Poison.Model
 {
@@ -26,6 +27,12 @@ namespace Poison.Model
             private set;
         }
 
+        internal PriorityQueue<Event> EventQueue
+        {
+            get;
+            private set;            
+        }
+
         public void Simulate(int counterStartValue)
         {
             throw new NotImplementedException();
@@ -41,7 +48,7 @@ namespace Poison.Model
             throw new NotImplementedException();
         }
 
-        internal void ProcessMessage()
+        internal void ProcessEvent()
         {
             throw new NotImplementedException();
         }

@@ -69,14 +69,14 @@ namespace Poison.Collections
             queue.TrimExcess();
         }
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             return ((IEnumerable<T>)queue).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)queue).GetEnumerator();
+            return GetEnumerator();
         }
 
         void ICollection.CopyTo(Array array, int index)

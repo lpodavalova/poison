@@ -91,7 +91,7 @@ namespace Poison.Model
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return dictionary.Values.GetEnumerator();
+            return GetEnumerator();
         }
     }
 }

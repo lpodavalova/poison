@@ -1,15 +1,9 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using pm = Poison.Model;
 using ps = Poison.Stochastic;
 
 namespace Poison.Test.Model
 {
-    /// <summary>
-    /// Summary description for ModelTest
-    /// </summary>
     [TestClass]
     public class ModelTest
     {

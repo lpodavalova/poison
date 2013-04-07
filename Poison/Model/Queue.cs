@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Poison.Model
 {
-    public class Queue
+    public class Queue : IModelEntity
     {
         public Queue(string name)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
             Name = name;
         }
 
@@ -32,6 +34,26 @@ namespace Poison.Model
         public void Dequeue(Transact transact)
         {
             throw new NotImplementedException();
+        }
+
+        string IModelEntity.Name
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
+        Model IModelEntity.Model
+        {
+            get
+            {
+                return Model;
+            }
+            set
+            {
+                Model = value;
+            }
         }
     }
 }

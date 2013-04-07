@@ -1,15 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Poison.Stochastic;
 
 namespace Poison.Model
 {
-    public class Generator
+    public class Generator : IModelEntity
     {
         public Generator(string name, IDistribution distribution, TransactHandler handler)
         {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (distribution == null)
+            {
+                throw new ArgumentNullException("distribution");
+            }
+
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+
             Distribution = distribution;
             this.handler = handler;
             Name = name;
@@ -31,6 +43,26 @@ namespace Poison.Model
         {
             get;
             private set;
+        }
+
+        string IModelEntity.Name
+        {
+            get
+            {
+                return Name;
+            }
+        }
+
+        Model IModelEntity.Model
+        {
+            get
+            {
+                return Model;
+            }
+            set
+            {
+                Model = value;
+            }
         }
 
         private TransactHandler handler;

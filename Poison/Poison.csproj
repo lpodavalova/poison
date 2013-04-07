@@ -45,8 +45,10 @@
     <Compile Include="Model\EventHandler.cs" />
     <Compile Include="Model\Generator.cs" />
     <Compile Include="Model\GeneratorCollection.cs" />
+    <Compile Include="Model\IModelEntity.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Collectioins\PriorityQueue.cs" />
+    <Compile Include="Model\ModelEntityCollection.cs" />
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\QueueCollection.cs" />
     <Compile Include="Model\TransactHandler.cs" />

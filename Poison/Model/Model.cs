@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Poison.Stochastic;
 using Poison.Collections;
 
 namespace Poison.Model
@@ -11,10 +7,12 @@ namespace Poison.Model
     {
         public Model()
         {
-            Queues = new QueueCollection();
-            Devices = new DeviceCollection();
-            Generators = new GeneratorCollection();
+            Queues = new QueueCollection(this);
+            Devices = new DeviceCollection(this);
+            Generators = new GeneratorCollection(this);
+
             EventQueue = new PriorityQueue<Event>();
+
             Time = 0;
         }
 

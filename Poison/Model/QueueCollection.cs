@@ -6,38 +6,8 @@ using System.Text;
 
 namespace Poison.Model
 {
-    public class QueueCollection : IDictionary<string, Queue>
+    public class QueueCollection : IList<Queue>
     {
-        public void Add(string key, Queue value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<string> Keys
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool Remove(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetValue(string key, out Queue value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Queue> Values
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         public Queue this[string key]
         {
             get
@@ -50,7 +20,34 @@ namespace Poison.Model
             }
         }
 
-        public void Add(KeyValuePair<string, Queue> item)
+        public int IndexOf(Queue item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, Queue item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Queue this[int index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Add(Queue item)
         {
             throw new NotImplementedException();
         }
@@ -60,12 +57,12 @@ namespace Poison.Model
             throw new NotImplementedException();
         }
 
-        public bool Contains(KeyValuePair<string, Queue> item)
+        public bool Contains(Queue item)
         {
             throw new NotImplementedException();
         }
 
-        public void CopyTo(KeyValuePair<string, Queue>[] array, int arrayIndex)
+        public void CopyTo(Queue[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -80,12 +77,12 @@ namespace Poison.Model
             get { throw new NotImplementedException(); }
         }
 
-        public bool Remove(KeyValuePair<string, Queue> item)
+        public bool Remove(Queue item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<KeyValuePair<string, Queue>> GetEnumerator()
+        public IEnumerator<Queue> GetEnumerator()
         {
             throw new NotImplementedException();
         }

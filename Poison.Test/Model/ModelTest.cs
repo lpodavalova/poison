@@ -17,10 +17,10 @@ namespace Poison.Test.Model
         public void Test1()
         {
             pm.Model model = new pm.Model();
-            
-            model.Queues.Add("queue1",new pm.Queue());
-            model.Devices.Add("device1", new pm.Device());
-            model.Generators.Add("generator1",new pm.Generator(new ps.Normal(4, 2), TransactHandler));            
+
+            model.Queues.Add(new pm.Queue("queue1"));
+            model.Devices.Add(new pm.Device("device1"));
+            model.Generators.Add(new pm.Generator("generator1", new ps.Normal(4, 2), TransactHandler));            
 
             model.Simulate(1000);
 

@@ -7,12 +7,12 @@ namespace Poison.Model
 {
     class Event : IEquatable<Event>, IComparable<Event>
     {
-        public Event(ulong tick, EventHandler handler)
+        public Event(double time, EventHandler handler)
         {
             throw new NotImplementedException();
         }
 
-        public ulong Tick
+        public double Time
         {
             get;
             private set;

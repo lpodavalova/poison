@@ -6,38 +6,8 @@ using System.Text;
 
 namespace Poison.Model
 {
-    public class GeneratorCollection : IDictionary<string, Generator>
+    public class GeneratorCollection : IList<Generator>
     {
-        public void Add(string key, Generator value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<string> Keys
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool Remove(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetValue(string key, out Generator value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Generator> Values
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         public Generator this[string key]
         {
             get
@@ -50,7 +20,34 @@ namespace Poison.Model
             }
         }
 
-        public void Add(KeyValuePair<string, Generator> item)
+        public int IndexOf(Generator item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, Generator item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Generator this[int index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Add(Generator item)
         {
             throw new NotImplementedException();
         }
@@ -60,12 +57,12 @@ namespace Poison.Model
             throw new NotImplementedException();
         }
 
-        public bool Contains(KeyValuePair<string, Generator> item)
+        public bool Contains(Generator item)
         {
             throw new NotImplementedException();
         }
 
-        public void CopyTo(KeyValuePair<string, Generator>[] array, int arrayIndex)
+        public void CopyTo(Generator[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -80,12 +77,12 @@ namespace Poison.Model
             get { throw new NotImplementedException(); }
         }
 
-        public bool Remove(KeyValuePair<string, Generator> item)
+        public bool Remove(Generator item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<KeyValuePair<string, Generator>> GetEnumerator()
+        public IEnumerator<Generator> GetEnumerator()
         {
             throw new NotImplementedException();
         }

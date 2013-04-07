@@ -6,38 +6,8 @@ using System.Text;
 
 namespace Poison.Model
 {
-    public class DeviceCollection : IDictionary<string, Device>
+    public class DeviceCollection : IList<Device>
     {
-        public void Add(string key, Device value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ContainsKey(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<string> Keys
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool Remove(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool TryGetValue(string key, out Device value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Device> Values
-        {
-            get { throw new NotImplementedException(); }
-        }
-
         public Device this[string key]
         {
             get
@@ -50,7 +20,34 @@ namespace Poison.Model
             }
         }
 
-        public void Add(KeyValuePair<string, Device> item)
+        public int IndexOf(Device item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, Device item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Device this[int index]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void Add(Device item)
         {
             throw new NotImplementedException();
         }
@@ -60,12 +57,12 @@ namespace Poison.Model
             throw new NotImplementedException();
         }
 
-        public bool Contains(KeyValuePair<string, Device> item)
+        public bool Contains(Device item)
         {
             throw new NotImplementedException();
         }
 
-        public void CopyTo(KeyValuePair<string, Device>[] array, int arrayIndex)
+        public void CopyTo(Device[] array, int arrayIndex)
         {
             throw new NotImplementedException();
         }
@@ -80,12 +77,12 @@ namespace Poison.Model
             get { throw new NotImplementedException(); }
         }
 
-        public bool Remove(KeyValuePair<string, Device> item)
+        public bool Remove(Device item)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerator<KeyValuePair<string, Device>> GetEnumerator()
+        public IEnumerator<Device> GetEnumerator()
         {
             throw new NotImplementedException();
         }

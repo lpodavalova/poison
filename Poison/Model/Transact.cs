@@ -7,12 +7,12 @@ namespace Poison.Model
 {
     public class Transact : IEquatable<Transact>, IComparable<Transact>
     {
-        internal Transact(Model model, string generatorKey)
+        internal Transact(Model model, Generator generator)
         {
             throw new NotImplementedException();
         }
 
-        internal Transact(Model model, string generatorKey, int priority)
+        internal Transact(Model model, Generator generator, int priority)
         {
             throw new NotImplementedException();
         }
@@ -23,7 +23,7 @@ namespace Poison.Model
             internal set;
         }
 
-        public string GeneratorKey
+        public Generator Generator
         {
             get;
             internal set;

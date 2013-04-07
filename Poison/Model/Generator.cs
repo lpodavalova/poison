@@ -8,15 +8,49 @@ namespace Poison.Model
 {
     public class Generator
     {
+        public Generator(string name, IDistribution distribution, TransactHandler handler)
+        {
+            Distribution = distribution;
+            this.handler = handler;
+            Name = name;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
         public Model Model
         {
             get;
             internal set;
         }
 
-        public Generator(IDistribution distribution, TransactHandler handler)
+        public IDistribution Distribution
         {
-            throw new NotImplementedException();
-        }        
+            get;
+            private set;
+        }
+
+        private TransactHandler handler;
+
+        private void EnterTransact()
+        {
+            Transact transact = new Transact(Model, this);
+
+            GenerateEvent();
+
+            handler(Model,transact);
+        }
+
+        public void GenerateEvent()
+        {
+            double time = Distribution.Next();
+
+            Event ev = new Event(Model.Time + time, EnterTransact);
+
+            Model.EventQueue.Enqueue(ev);
+        }
     }
 }

@@ -7,6 +7,17 @@ namespace Poison.Model
 {
     public class Queue
     {
+        public Queue(string name)
+        {
+            Name = name;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
         public Model Model
         {
             get;

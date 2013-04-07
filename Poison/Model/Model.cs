@@ -9,6 +9,27 @@ namespace Poison.Model
 {
     public class Model
     {
+        public Model()
+        {
+            Queues = new QueueCollection();
+            Devices = new DeviceCollection();
+            Generators = new GeneratorCollection();
+            EventQueue = new PriorityQueue<Event>();
+            Time = 0;
+        }
+
+        public int RemainingCounter
+        {
+            get;
+            private set;
+        }
+
+        public double Time
+        {
+            get;
+            private set;
+        }
+
         public QueueCollection Queues
         {
             get;
@@ -33,9 +54,24 @@ namespace Poison.Model
             private set;            
         }
 
-        public void Simulate(int counterStartValue)
+        public void Simulate(int initialRemainingCounter)
         {
-            throw new NotImplementedException();
+            RemainingCounter = initialRemainingCounter;
+
+            foreach (Generator g in Generators)
+            {
+                g.GenerateEvent();                
+            }
+
+            while (IsAlive())
+            {
+                ProcessEvent();
+            }
+        }
+
+        internal bool IsAlive()
+        {
+            return RemainingCounter > 0 && EventQueue.Count > 0;
         }
 
         public void Advance(double value)
@@ -45,12 +81,16 @@ namespace Poison.Model
 
         public void Terminate(int count)
         {
-            throw new NotImplementedException();
+            RemainingCounter -= count;
         }
 
         internal void ProcessEvent()
         {
-            throw new NotImplementedException();
+            Event ev = EventQueue.Dequeue();
+
+            Time = ev.Time;
+
+            ev.Handler();
         }
     }
 }

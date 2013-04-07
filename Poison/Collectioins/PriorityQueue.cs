@@ -6,79 +6,106 @@ namespace Poison.Collections
 {
     class PriorityQueue<T> : IEnumerable<T>, ICollection, IEnumerable where T : IComparable<T>
     {
+        private List<T> queue;
+
         public PriorityQueue()
         {
-            throw new NotImplementedException();
+            queue = new List<T>();
         }
 
         public PriorityQueue(int capacity)
         {
-            throw new NotImplementedException();
+            queue = new List<T>(capacity);
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            queue.Clear();
         }
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            return queue.Contains(item);
         }
 
         public void Enqueue(T item)
         {
-            throw new NotImplementedException();
+            int index = queue.BinarySearch(item);
+
+            if (index < 0)
+            {
+                index = ~index;
+            }
+
+            queue.Insert(index, item);
         }
 
         public T Dequeue()
         {
-            throw new NotImplementedException();
+            T item = Peek();
+
+            queue.RemoveAt(0);
+
+            return item;
         }
 
         public T Peek()
         {
-            throw new NotImplementedException();
+            if (queue.Count == 0)
+            {
+                throw new InvalidOperationException("Queue is empty");
+            }
+
+            return queue[0];
         }
 
         public T[] ToArray()
         {
-            throw new NotImplementedException();
+            return queue.ToArray();
         }
 
         public void TrimExcess()
         {
-            throw new NotImplementedException();
+            queue.TrimExcess();
         }
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return ((IEnumerable<T>)queue).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return ((IEnumerable)queue).GetEnumerator();
         }
 
         void ICollection.CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            ((ICollection)queue).CopyTo(array, index);
         }
 
         public int Count
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return queue.Count;
+            }
         }
 
         bool ICollection.IsSynchronized
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return ((ICollection)queue).IsSynchronized;
+            }
         }
 
         object ICollection.SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return ((ICollection)queue).SyncRoot;
+            }
         }
     }
 }

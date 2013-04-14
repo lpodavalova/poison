@@ -22,14 +22,22 @@ namespace Poison.Model
 {
     public class Transact : IEquatable<Transact>, IComparable<Transact>
     {
-        internal Transact(Model model, Generator generator)
+        internal Transact(Model model, Generator generator, int priority = 0)
         {
-            throw new NotImplementedException();
-        }
+            if (model == null)
+            {
+                throw new ArgumentNullException("model");
+            }
 
-        internal Transact(Model model, Generator generator, int priority)
-        {
-            throw new NotImplementedException();
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            Priority = priority;
+            Model = model;
+            Generator = generator;
+            ID = Guid.NewGuid();
         }
 
         public Model Model
@@ -58,62 +66,98 @@ namespace Poison.Model
 
         public static bool operator ==(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return Equals(objA, objB);
         }
 
         public static bool operator !=(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return !Equals(objA, objB);
         }
 
         public static bool operator <(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) < 0;
         }
 
         public static bool operator >(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) > 0;
         }
 
         public static bool operator >=(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) > -1;
         }
 
         public static bool operator <=(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) < 1;
         }
 
         public static bool Equals(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            if (objA == null)
+            {
+                if (objB == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return objA.Equals(objB);
         }
 
         public static int Compare(Transact objA, Transact objB)
         {
-            throw new NotImplementedException();
+            if (objA == null)
+            {
+                if (objB == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
+            return objA.CompareTo(objB);
         }
 
         public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            Event ev = obj as Event;
+
+            return Equals(ev);
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return ID.GetHashCode();
         }
 
         public bool Equals(Transact other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                return false;
+            }
+
+            return ID.Equals(other.ID);
         }
 
         public int CompareTo(Transact other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                return 1;
+            }
+
+            return ID.CompareTo(other.ID);
         }
     }
 }

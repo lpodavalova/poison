@@ -17,6 +17,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace Poison.Model
 {

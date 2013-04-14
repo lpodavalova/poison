@@ -7,6 +7,8 @@ namespace Poison.Model
 {
     public class Queue
     {
+        private Queue<Transact> queue = new Queue<Transact>();
+
         public Queue(string name)
         {
             Name = name;
@@ -24,14 +26,29 @@ namespace Poison.Model
             internal set;
         }
 
-        public void Enqueue(Transact transact)
+        public void Enqueue(Transact transact, TransactHandler transactHandler)
         {
-            throw new NotImplementedException();
+            queue.Enqueue(transact);
+            while (Model.IsAlive() && queue.Peek() != transact)
+            {
+                Model.ProcessEvent();
+            }
+
+            if (!Model.IsAlive())
+            {
+                return;
+            }
+
+            transactHandler(Model, transact);
         }
 
         public void Dequeue(Transact transact)
         {
-            throw new NotImplementedException();
+            if (queue.Peek() != transact)
+            {
+                // TODO: throw exception
+            }
+            queue.Dequeue();
         }
     }
 }

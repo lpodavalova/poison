@@ -74,9 +74,17 @@ namespace Poison.Model
             return RemainingCounter > 0 && EventQueue.Count > 0;
         }
 
-        public void Advance(double value)
+        public void Advance(double value, Transact transact, TransactHandler transactHandler)
         {
-            throw new NotImplementedException();
+            EventQueue.Enqueue(new Event(Time + value, new EventHandler(delegate() 
+                {
+                    transactHandler(this, transact);
+                })));
+
+            while (IsAlive())
+            {
+                ProcessEvent();
+            }
         }
 
         public void Terminate(int count)

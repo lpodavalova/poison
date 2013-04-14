@@ -18,12 +18,17 @@
 
 namespace Poison.Model
 {
-    public class GeneratorCollection : ModelEntityCollection<Generator>
+    public interface IModelEntity
     {
-        public GeneratorCollection(Model model) 
-            : base(model)
+        string Name
         {
+            get;
+        }
 
+        Model Model
+        {
+            get;
+            set;
         }
     }
 }

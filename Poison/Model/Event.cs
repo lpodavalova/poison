@@ -41,62 +41,98 @@ namespace Poison.Model
 
         public static bool operator ==(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return Equals(objA, objB);
         }
 
         public static bool operator !=(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return !Equals(objA, objB);
         }
 
         public static bool operator <(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) < 0;
         }
 
         public static bool operator >(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) > 0;
         }
 
         public static bool operator >=(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) > -1;
         }
 
         public static bool operator <=(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            return Compare(objA, objB) < 1;
         }
 
         public static bool Equals(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            if (objA == null)
+            {
+                if (objB == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return objA.Equals(objB);
         }
 
         public static int Compare(Event objA, Event objB)
         {
-            throw new NotImplementedException();
+            if (objA == null)
+            {
+                if (objB == null)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
+            return objA.CompareTo(objB);
         }
 
         public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            Event ev = obj as Event;
+
+            return Equals(ev);
         }
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            return Time.GetHashCode();
         }
 
         public bool Equals(Event other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                return false;
+            }
+
+            return Time.Equals(other.Time);
         }
 
         public int CompareTo(Event other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                return 1;
+            }
+
+            return Time.CompareTo(other.Time);
         }
     }
 }

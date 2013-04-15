@@ -71,14 +71,25 @@ namespace Poison.Model
             private set;
         }
 
-        public void Seize(Transact transact)
+        public void Seize(Transact transact, TransactHandler transactHandler)
         {
-            throw new NotImplementedException();
+            while (Model.IsAlive() && State != DeviceState.Free)
+            {
+                Model.ProcessEvent();
+            }
+
+            if (!Model.IsAlive())
+            {
+                return;
+            }
+
+            State = DeviceState.Busy;
+            transactHandler(Model, transact);            
         }
 
         public void Release(Transact transact)
         {
-            throw new NotImplementedException();
+            State = DeviceState.Free;
         }
     }
 }

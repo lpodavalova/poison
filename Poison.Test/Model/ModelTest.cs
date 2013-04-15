@@ -42,11 +42,23 @@ namespace Poison.Test.Model
         private ps.Normal deviceSeizeTime = new ps.Normal(6, 3);
 
         public void TransactHandler(pm.Model model, pm.Transact transact)
+        {           
+            model.Queues["queue1"].Enqueue(transact, new pm.TransactHandler(TransactHandler1));
+        }
+
+        public void TransactHandler1(pm.Model model, pm.Transact transact)
         {
-            model.Queues["queue1"].Enqueue(transact);
-            model.Devices["devices1"].Seize(transact);
+            model.Devices["devices1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
+        }
+
+        public void TransactHandler2(pm.Model model, pm.Transact transact)
+        {
             model.Queues["queue1"].Dequeue(transact);
-            model.Advance(deviceSeizeTime.Next());
+            model.Advance(deviceSeizeTime.Next(), transact, new pm.TransactHandler(TransactHandler3));
+        }
+
+        public void TransactHandler3(pm.Model model, pm.Transact transact)
+        {
             model.Devices["devices1"].Release(transact);
 
             model.Terminate(1);

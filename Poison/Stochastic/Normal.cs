@@ -28,7 +28,7 @@ namespace Poison.Stochastic
             private set;
         }
 
-        public double StDev
+        public double StdDev
         {
             get;
             private set;

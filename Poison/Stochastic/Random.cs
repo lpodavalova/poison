@@ -22,14 +22,16 @@ namespace Poison.Stochastic
 {
     class Random : IRandom
     {
+        private System.Random random;
+            
         public Random()
         {
-            throw new NotImplementedException();
+            random = new System.Random();
         }
 
         public double Next()
         {
-            throw new NotImplementedException();
+            return random.NextDouble();
         }
     }
 }

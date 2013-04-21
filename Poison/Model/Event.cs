@@ -24,7 +24,18 @@ namespace Poison.Model
     {
         public Event(double time, EventHandler handler)
         {
-            throw new NotImplementedException();
+            if (Math.Sign(time) < 0)
+            {
+                throw new ArgumentException("time should be more or equal to zero");
+            }
+
+            if (handler == null)
+            {
+                throw new ArgumentNullException("handler");
+            }
+
+            Time = time;
+            Handler = handler;
         }
 
         public double Time
@@ -71,9 +82,9 @@ namespace Poison.Model
 
         public static bool Equals(Event objA, Event objB)
         {
-            if (objA == null)
+            if ((object)objA == null)
             {
-                if (objB == null)
+                if ((object)objB == null)
                 {
                     return true;
                 }

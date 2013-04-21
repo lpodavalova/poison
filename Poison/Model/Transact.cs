@@ -96,9 +96,9 @@ namespace Poison.Model
 
         public static bool Equals(Transact objA, Transact objB)
         {
-            if (objA == null)
+            if ((object)objA == null)
             {
-                if (objB == null)
+                if ((object)objB == null)
                 {
                     return true;
                 }

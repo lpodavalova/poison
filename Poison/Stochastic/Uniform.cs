@@ -36,12 +36,18 @@ namespace Poison.Stochastic
 
         public Uniform(double min, double max)
         {
-            throw new NotImplementedException();            
+            if (min >= max)
+            {
+                throw new ArgumentException("min should be less than max");
+            }
+
+            Min = min;
+            Max = max;
         }
 
         public double Next()
         {
-            throw new NotImplementedException();
+            return Min + (Max - Min) * RandomFactory.Randomizer.Next();
         }
     }
 }

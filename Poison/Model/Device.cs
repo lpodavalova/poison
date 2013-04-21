@@ -73,6 +73,16 @@ namespace Poison.Model
 
         public void Seize(Transact transact, TransactHandler transactHandler)
         {
+            if (transact == null)
+            {
+                throw new ArgumentNullException("transact");
+            }
+
+            if (transactHandler == null)
+            {
+                throw new ArgumentNullException("transactHandler");
+            }
+
             while (Model.IsAlive() && State != DeviceState.Free)
             {
                 Model.ProcessEvent();
@@ -89,6 +99,11 @@ namespace Poison.Model
 
         public void Release(Transact transact)
         {
+            if (transact == null)
+            {
+                throw new ArgumentNullException("transact");
+            }
+
             State = DeviceState.Free;
         }
     }

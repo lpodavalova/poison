@@ -32,7 +32,7 @@ namespace Poison.Test.Model
 
             model.Queues.Add(new pm.Queue("queue1"));
             model.Devices.Add(new pm.Device("device1"));
-            model.Generators.Add(new pm.Generator("generator1", new ps.Normal(4, 2), TransactHandler));            
+            model.Generators.Add(new pm.Generator("generator1", new ps.Normal(10, 0.5), TransactHandler));            
 
             model.Simulate(1000);
 
@@ -48,7 +48,7 @@ namespace Poison.Test.Model
 
         public void TransactHandler1(pm.Model model, pm.Transact transact)
         {
-            model.Devices["devices1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
+            model.Devices["device1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
         }
 
         public void TransactHandler2(pm.Model model, pm.Transact transact)
@@ -59,7 +59,7 @@ namespace Poison.Test.Model
 
         public void TransactHandler3(pm.Model model, pm.Transact transact)
         {
-            model.Devices["devices1"].Release(transact);
+            model.Devices["device1"].Release(transact);
 
             model.Terminate(1);
         }

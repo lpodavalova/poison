@@ -72,6 +72,11 @@ namespace Poison.Model
 
         public void Simulate(int initialRemainingCounter)
         {
+            if (initialRemainingCounter < 0)
+            {
+                throw new ArgumentException("initialRemainingCounter should be more or equal to zero");
+            }
+
             RemainingCounter = initialRemainingCounter;
 
             foreach (Generator g in Generators)
@@ -92,6 +97,21 @@ namespace Poison.Model
 
         public void Advance(double value, Transact transact, TransactHandler transactHandler)
         {
+            if (transact == null)
+            {
+                throw new ArgumentNullException("transact");
+            }
+
+            if (transactHandler == null)
+            {
+                throw new ArgumentNullException("transactHandler");
+            }
+
+            if (Math.Sign(value) < 0)
+            {
+                value = 0;
+            }
+
             EventQueue.Enqueue(new Event(Time + value, new EventHandler(delegate() 
                 {
                     transactHandler(this, transact);

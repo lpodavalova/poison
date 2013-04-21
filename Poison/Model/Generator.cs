@@ -98,6 +98,11 @@ namespace Poison.Model
         {
             double time = Distribution.Next();
 
+            if (Math.Sign(time) < 0)
+            {
+                time = 0;
+            }
+
             Event ev = new Event(Model.Time + time, EnterTransact);
 
             Model.EventQueue.Enqueue(ev);

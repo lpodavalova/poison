@@ -22,6 +22,9 @@ namespace Poison.Stochastic
 {
     public class Normal : IDistribution
     {
+        private bool isSpareReady = false;
+        private double spare;
+
         public double Mean
         {
             get;
@@ -36,12 +39,37 @@ namespace Poison.Stochastic
 
         public Normal(double mean, double stdDev)
         {
-            throw new NotImplementedException();
+            if (Math.Sign(stdDev) < 0)
+            {
+                throw new ArgumentException("stdDev should be more or equal to zero");
+            }
+
+            Mean = mean;
+            StdDev = stdDev;
         }
 
         public double Next()
         {
-            throw new NotImplementedException();
+            if (isSpareReady)
+            {
+                isSpareReady = false;
+                return spare * StdDev + Mean;
+            }
+            else
+            {
+                double u, v, s;
+                do
+                {
+                    u = RandomFactory.Randomizer.Next() * 2 - 1;
+                    v = RandomFactory.Randomizer.Next() * 2 - 1;
+                    s = u * u + v * v;
+                } while (s >= 1 || s == 0);
+
+                double mul = Math.Sqrt(-2.0 * Math.Log(s) / s);
+                spare = v * mul;
+                isSpareReady = true;
+                return Mean + StdDev * u * mul;
+            }
         }
     }
 }

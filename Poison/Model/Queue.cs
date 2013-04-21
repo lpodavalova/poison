@@ -49,6 +49,16 @@ namespace Poison.Model
 
         public void Enqueue(Transact transact, TransactHandler transactHandler)
         {
+            if (transact == null)
+            {
+                throw new ArgumentNullException("transact");
+            }
+
+            if (transactHandler == null)
+            {
+                throw new ArgumentNullException("transactHandler");
+            }
+
             queue.Enqueue(transact);
             while (Model.IsAlive() && queue.Peek() != transact)
             {
@@ -65,6 +75,11 @@ namespace Poison.Model
 
         public void Dequeue(Transact transact)
         {
+            if (transact == null)
+            {
+                throw new ArgumentNullException("transact");
+            }
+
             if (queue.Peek() != transact)
             {
                 // TODO: throw exception

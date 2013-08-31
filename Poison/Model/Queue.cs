@@ -60,6 +60,13 @@ namespace Poison.Model
             }
 
             queue.Enqueue(transact);
+            EntryCount++;
+
+            if (Max < queue.Count)
+            {
+                Max = queue.Count;
+            }
+
             while (Model.IsAlive() && queue.Peek() != transact)
             {
                 Model.ProcessEvent();
@@ -105,6 +112,34 @@ namespace Poison.Model
             {
                 Model = value;
             }
+        }
+
+        #region Statistics
+
+        public int Max
+        {
+            get;
+            private set;
+        }
+
+        public int EntryCount
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
+        internal void Init()
+        {
+            queue.Clear();
+            Max = 0;
+            EntryCount = 0;
+        }
+
+        internal void Final()
+        {
+
         }
     }
 }

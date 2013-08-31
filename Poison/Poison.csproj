@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\DoubleExt.cs" />
     <Compile Include="Model\FacilityCollection.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\EventHandler.cs" />

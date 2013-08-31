@@ -107,5 +107,15 @@ namespace Poison.Model
 
             Model.EventQueue.Enqueue(ev);
         }
+
+        internal void Init()
+        {
+
+        }
+
+        internal void Final()
+        {
+
+        }
     }
 }

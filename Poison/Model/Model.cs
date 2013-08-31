@@ -18,6 +18,7 @@
 
 using System;
 using Poison.Collections;
+using Poison.Model.Enums;
 
 namespace Poison.Model
 {
@@ -79,6 +80,21 @@ namespace Poison.Model
 
             RemainingCounter = initialRemainingCounter;
 
+            foreach (Facility f in Facilities)
+            {
+                f.Init();
+            }
+
+            foreach (Generator g in Generators)
+            {
+                g.Init();
+            }
+
+            foreach (Queue q in Queues)
+            {
+                q.Init();
+            }
+
             foreach (Generator g in Generators)
             {
                 g.GenerateEvent();                
@@ -87,6 +103,22 @@ namespace Poison.Model
             while (IsAlive())
             {
                 ProcessEvent();
+            }
+
+            foreach (Queue q in Queues)
+            {
+                q.Final();
+            }
+
+            foreach (Generator g in Generators)
+            {
+                g.Final();
+            }
+
+
+            foreach (Facility f in Facilities)
+            {
+                f.Final();
             }
         }
 

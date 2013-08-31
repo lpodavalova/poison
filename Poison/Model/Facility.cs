@@ -18,6 +18,7 @@
 
 using System;
 using Poison.Model.Enums;
+using Poison.Extensions;
 
 namespace Poison.Model
 {
@@ -71,6 +72,41 @@ namespace Poison.Model
             private set;
         }
 
+        public int Entries
+        {
+            get;
+            internal set;
+        }
+
+        #region Statistics
+
+        public double AverageTime
+        {
+            get
+            {
+                return seizeTime.SmartDiv(Entries);
+            }
+        }
+
+        public double Utilization
+        {
+            get
+            {
+                return seizeTime / Model.Time;
+            }
+        }
+
+        public Transact LastOwner
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
+        private double seizeTime;
+        private double timeStart;
+
         public void Seize(Transact transact, TransactHandler transactHandler)
         {
             if (transact == null)
@@ -93,6 +129,10 @@ namespace Poison.Model
                 return;
             }
 
+            Entries++;
+            timeStart = Model.Time;
+            LastOwner = transact;
+
             State = FacilityState.Busy;
             transactHandler(Model, transact);            
         }
@@ -104,7 +144,27 @@ namespace Poison.Model
                 throw new ArgumentNullException("transact");
             }
 
-            State = FacilityState.Free;
+            if (State != FacilityState.Free)
+            {
+                State = FacilityState.Free;
+
+                seizeTime += Model.Time - timeStart;
+            }
+        }
+
+        internal void Init()
+        {
+            Entries = 0;
+            seizeTime = 0.0;
+            LastOwner = null;
+        }
+
+        internal void Final()
+        {
+            if (State != FacilityState.Free)
+            {
+                seizeTime += Model.Time - timeStart;
+            }
         }
     }
 }

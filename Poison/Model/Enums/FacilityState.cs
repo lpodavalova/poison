@@ -18,7 +18,7 @@
 
 namespace Poison.Model.Enums
 {
-    public enum DeviceState
+    public enum FacilityState
     {
         // Устройство свободно
         Free,

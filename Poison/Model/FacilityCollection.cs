@@ -18,9 +18,9 @@
 
 namespace Poison.Model
 {
-    public class DeviceCollection : ModelEntityCollection<Device>
+    public class FacilityCollection : ModelEntityCollection<Facility>
     {
-        public DeviceCollection(Model model) 
+        public FacilityCollection(Model model) 
             : base(model)
         {
 

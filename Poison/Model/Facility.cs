@@ -21,9 +21,9 @@ using Poison.Model.Enums;
 
 namespace Poison.Model
 {
-    public class Device : IModelEntity
+    public class Facility : IModelEntity
     {
-        public Device(string name)
+        public Facility(string name)
         {
             if (name == null)
             {
@@ -65,7 +65,7 @@ namespace Poison.Model
             }
         }
 
-        public DeviceState State
+        public FacilityState State
         {
             get;
             private set;
@@ -83,7 +83,7 @@ namespace Poison.Model
                 throw new ArgumentNullException("transactHandler");
             }
 
-            while (Model.IsAlive() && State != DeviceState.Free)
+            while (Model.IsAlive() && State != FacilityState.Free)
             {
                 Model.ProcessEvent();
             }
@@ -93,7 +93,7 @@ namespace Poison.Model
                 return;
             }
 
-            State = DeviceState.Busy;
+            State = FacilityState.Busy;
             transactHandler(Model, transact);            
         }
 
@@ -104,7 +104,7 @@ namespace Poison.Model
                 throw new ArgumentNullException("transact");
             }
 
-            State = DeviceState.Free;
+            State = FacilityState.Free;
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Poison.Model
         public Model()
         {
             Queues = new QueueCollection(this);
-            Devices = new DeviceCollection(this);
+            Facilities = new FacilityCollection(this);
             Generators = new GeneratorCollection(this);
 
             EventQueue = new PriorityQueue<Event>();
@@ -52,7 +52,7 @@ namespace Poison.Model
             private set;
         }
 
-        public DeviceCollection Devices
+        public FacilityCollection Facilities
         {
             get;
             private set;

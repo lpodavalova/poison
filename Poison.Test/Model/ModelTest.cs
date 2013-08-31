@@ -31,7 +31,7 @@ namespace Poison.Test.Model
             pm.Model model = new pm.Model();
 
             model.Queues.Add(new pm.Queue("queue1"));
-            model.Devices.Add(new pm.Device("device1"));
+            model.Facilities.Add(new pm.Facility("facility1"));
             model.Generators.Add(new pm.Generator("generator1", new ps.Normal(10, 0.5), TransactHandler));            
 
             model.Simulate(1000);
@@ -39,7 +39,7 @@ namespace Poison.Test.Model
             Assert.Fail("Not implemented");
         }
 
-        private ps.Normal deviceSeizeTime = new ps.Normal(6, 3);
+        private ps.Normal facilitySeizeTime = new ps.Normal(6, 3);
 
         public void TransactHandler(pm.Model model, pm.Transact transact)
         {           
@@ -48,18 +48,18 @@ namespace Poison.Test.Model
 
         public void TransactHandler1(pm.Model model, pm.Transact transact)
         {
-            model.Devices["device1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
+            model.Facilities["facility1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
         }
 
         public void TransactHandler2(pm.Model model, pm.Transact transact)
         {
             model.Queues["queue1"].Dequeue(transact);
-            model.Advance(deviceSeizeTime.Next(), transact, new pm.TransactHandler(TransactHandler3));
+            model.Advance(facilitySeizeTime.Next(), transact, new pm.TransactHandler(TransactHandler3));
         }
 
         public void TransactHandler3(pm.Model model, pm.Transact transact)
         {
-            model.Devices["device1"].Release(transact);
+            model.Facilities["facility1"].Release(transact);
 
             model.Terminate(1);
         }

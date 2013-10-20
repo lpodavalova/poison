@@ -63,5 +63,6 @@ namespace Poison.Test.Model
 
             model.Terminate(1);
         }
+
     }
 }

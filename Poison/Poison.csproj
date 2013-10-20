@@ -53,6 +53,7 @@
     <Compile Include="Model\Queue.cs" />
     <Compile Include="Model\QueueCollection.cs" />
     <Compile Include="Model\TransactHandler.cs" />
+    <Compile Include="Model\TransactQueueInfo.cs" />
     <Compile Include="Stochastic\IRandom.cs" />
     <Compile Include="Stochastic\Random.cs" />
     <Compile Include="Stochastic\IDistribution.cs" />

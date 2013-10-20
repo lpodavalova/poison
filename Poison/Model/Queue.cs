@@ -18,12 +18,13 @@
 
 using System;
 using System.Collections.Generic;
+using Poison.Extensions;
 
 namespace Poison.Model
 {
     public class Queue : IModelEntity
     {
-        private Queue<Transact> queue = new Queue<Transact>();
+        private Queue<TransactQueueInfo> queue = new Queue<TransactQueueInfo>();
 
         public Queue(string name)
         {
@@ -59,7 +60,9 @@ namespace Poison.Model
                 throw new ArgumentNullException("transactHandler");
             }
 
-            queue.Enqueue(transact);
+            UpdateLastCountChanged();
+
+            queue.Enqueue(new TransactQueueInfo(transact, Model.Time));
             EntryCount++;
 
             if (Max < queue.Count)
@@ -67,7 +70,7 @@ namespace Poison.Model
                 Max = queue.Count;
             }
 
-            while (Model.IsAlive() && queue.Peek() != transact)
+            while (Model.IsAlive() && queue.Peek().Transact != transact)
             {
                 Model.ProcessEvent();
             }
@@ -87,10 +90,21 @@ namespace Poison.Model
                 throw new ArgumentNullException("transact");
             }
 
-            if (queue.Peek() != transact)
+            TransactQueueInfo info = queue.Peek();
+
+            if (info.Transact != transact)
             {
                 // TODO: throw exception
             }
+
+            if (info.QueuingTime == Model.Time)
+            {
+                EntryCountZero++;
+            }
+
+            UpdateLastCountChanged();
+            sumTransactQueueStayTime += Model.Time - info.QueuingTime;
+
             queue.Dequeue();
         }
 
@@ -128,6 +142,54 @@ namespace Poison.Model
             private set;
         }
 
+        public int EntryCountZero
+        {
+            get;
+            private set;
+        }
+
+        public int Count
+        {
+            get
+            {
+                return queue.Count;
+            }
+        }
+
+        public double AverageCount
+        {
+            get
+            {
+                return sumCountTimeMul / Model.Time;
+            }
+        }
+
+        public double AverageTime
+        {
+            get
+            {
+                return sumTransactQueueStayTime.SmartDiv(EntryCount);
+            }
+        }
+
+        public double AverageTimeNonZero
+        {
+            get
+            {
+                return sumTransactQueueStayTime.SmartDiv(EntryCount - EntryCountZero);
+            }
+        }
+
+        private double lastCountChangedTime;
+        private double sumCountTimeMul;
+        private double sumTransactQueueStayTime;
+
+        private void UpdateLastCountChanged()
+        {
+            sumCountTimeMul += queue.Count * (Model.Time - lastCountChangedTime);
+            lastCountChangedTime = Model.Time;
+        }
+
         #endregion
 
         internal void Init()
@@ -135,6 +197,10 @@ namespace Poison.Model
             queue.Clear();
             Max = 0;
             EntryCount = 0;
+            EntryCountZero = 0;
+            lastCountChangedTime = 0.0;
+            sumCountTimeMul = 0.0;
+            sumTransactQueueStayTime = 0.0;
         }
 
         internal void Final()

@@ -31,6 +31,48 @@ namespace Poison.Sample1
             model.Facilities.Add(new pm.Facility(facility2Name));
 
             model.Simulate(100);
+
+            Console.WriteLine("START TIME: {0}", 0.0);
+            Console.WriteLine("END TIME: {0}", model.Time);
+            Console.WriteLine("FACILITIES: {0}", model.Facilities.Count);
+            Console.WriteLine("STORAGES: {0}", 0);
+            Console.WriteLine();
+
+            Console.WriteLine("FACILITIES");
+            Console.WriteLine();
+
+            foreach (pm.Facility facility in model.Facilities)
+            {
+                Console.WriteLine("FACILITY NAME: {0}", facility.Name);
+                Console.WriteLine("FACILITY ENTRIES: {0}", facility.Entries);
+                Console.WriteLine("FACILITY UTIL: {0}", facility.Utilization);
+                Console.WriteLine("FACILITY AVE . TIME: {0}", facility.AverageTime);
+                Console.WriteLine("FACILITY AVAIL: {0}", facility.State == pm.Enums.FacilityState.Free ? "Yes" : "No");
+                Console.WriteLine("FACILITY OWNER: {0}", facility.LastOwner);               
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("QUEUES");
+            Console.WriteLine();
+
+            foreach (pm.Queue queue in model.Queues)
+            {
+                Console.WriteLine("QUEUE NAME: {0}", queue.Name);
+                Console.WriteLine("QUEUE MAX: {0}", queue.Max);
+                Console.WriteLine("QUEUE CONT.: {0}", queue.Count);
+                Console.WriteLine("QUEUE ENTRY: {0}", queue.EntryCount);
+                Console.WriteLine("QUEUE ENTRY (0): {0}", queue.EntryCountZero);
+                Console.WriteLine("QUEUE AVE. CONT.: {0}", queue.AverageCount);
+                Console.WriteLine("QUEUE AVE. TIME: {0}", queue.AverageTime);
+                Console.WriteLine("QUEUE AVE. TIME (-0): {0}", queue.AverageTimeNonZero);                
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+
+            Console.ReadLine();
         }
 
         private static void G1EntryPoint(pm.Model model, pm.Transact transact)

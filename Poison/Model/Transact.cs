@@ -159,5 +159,10 @@ namespace Poison.Model
 
             return ID.CompareTo(other.ID);
         }
+
+        public override string ToString()
+        {
+            return ID.ToString();
+        }
     }
 }

@@ -96,6 +96,12 @@ namespace Poison.Model
             }
         }
 
+        public Transact Owner
+        {
+            get; 
+            private set;
+        }
+
         public Transact LastOwner
         {
             get;
@@ -107,49 +113,63 @@ namespace Poison.Model
         private double seizeTime;
         private double timeStart;
 
-        public void Seize(Transact transact, TransactHandler transactHandler)
+        private event TransactHandler _Released;
+        public event TransactHandler Released
+        {
+            add { _Released += value; }
+            remove { _Released -= value; }
+        }
+
+        private void OnReleased(Transact transact)
+        {
+            if (_Released != null)
+                _Released(Model, transact);
+        }
+
+        private event TransactHandler _Seized;
+        public event TransactHandler Seized
+        {
+            add { _Seized += value; }
+            remove { _Seized -= value; }
+        }
+
+        private void OnSeized(Transact transact)
+        {
+            if (_Seized != null)
+                _Seized(Model, transact);
+        }
+
+        public void Seize(Transact transact, double advanceTime)
         {
             if (transact == null)
             {
                 throw new ArgumentNullException("transact");
             }
 
-            if (transactHandler == null)
-            {
-                throw new ArgumentNullException("transactHandler");
-            }
+            // TODO: exception if already seized
 
-            while (Model.IsAlive() && State != FacilityState.Free)
-            {
-                Model.ProcessEvent();
-            }
-
-            if (!Model.IsAlive())
-            {
-                return;
-            }
+            Model.EventQueue.Enqueue(new Event(Model.Time + advanceTime, Release));
 
             Entries++;
             timeStart = Model.Time;
             LastOwner = transact;
 
             State = FacilityState.Busy;
-            transactHandler(Model, transact);            
+            Owner = transact;
+
+            OnSeized(transact);
         }
 
-        public void Release(Transact transact)
+        private void Release()
         {
-            if (transact == null)
-            {
-                throw new ArgumentNullException("transact");
-            }
+            State = FacilityState.Free;
 
-            if (State != FacilityState.Free)
-            {
-                State = FacilityState.Free;
+            seizeTime += Model.Time - timeStart;
 
-                seizeTime += Model.Time - timeStart;
-            }
+            Transact transact = Owner;
+            Owner = null;
+
+            OnReleased(transact);
         }
 
         internal void Init()

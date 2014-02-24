@@ -16,7 +16,9 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Poison.Model.Enums;
 using pm = Poison.Model;
 using ps = Poison.Stochastic;
 
@@ -32,37 +34,48 @@ namespace Poison.Test.Model
 
             model.Queues.Add(new pm.Queue("queue1"));
             model.Facilities.Add(new pm.Facility("facility1"));
-            model.Generators.Add(new pm.Generator("generator1", new ps.Normal(10, 0.5), TransactHandler));            
+            model.Generators.Add(new pm.Generator("generator1", new ps.Normal(10, 0.5)));
 
-            model.Simulate(1000);
+            model.Generators["generator1"].Entered += TransactHandler;
+            model.Queues["queue1"].NewItem += OnNewItem;
+            model.Facilities["facility1"].Released += OnReleased;
+
+            model.Simulate(10000);
 
             Assert.Fail("Not implemented");
         }
 
-        private ps.Normal facilitySeizeTime = new ps.Normal(6, 3);
-
         public void TransactHandler(pm.Model model, pm.Transact transact)
-        {           
-            model.Queues["queue1"].Enqueue(transact, new pm.TransactHandler(TransactHandler1));
+        {
+            model.Queues["queue1"].Enqueue(transact);
         }
 
-        public void TransactHandler1(pm.Model model, pm.Transact transact)
+        private void OnNewItem(pm.Model model, pm.Transact transact)
         {
-            model.Facilities["facility1"].Seize(transact, new pm.TransactHandler(TransactHandler2));
+            pm.Facility facility = model.Facilities["facility1"];
+            if (facility.State == FacilityState.Free)
+            {
+                SeizeFacility(facility,transact);
+            }
         }
 
-        public void TransactHandler2(pm.Model model, pm.Transact transact)
+        private void OnReleased(pm.Model model, pm.Transact transact)
         {
-            model.Queues["queue1"].Dequeue(transact);
-            model.Advance(facilitySeizeTime.Next(), transact, new pm.TransactHandler(TransactHandler3));
-        }
+            pm.Transact transactFromQueue = model.Queues["queue1"].Dequeue();
 
-        public void TransactHandler3(pm.Model model, pm.Transact transact)
-        {
-            model.Facilities["facility1"].Release(transact);
+            if (transactFromQueue != null)
+            {
+                SeizeFacility(model.Facilities["facility1"],transactFromQueue);
+            }
 
             model.Terminate(1);
         }
 
+        private void SeizeFacility(pm.Facility facility, pm.Transact transact)
+        {
+            facility.Seize(transact, facilitySeizeTime.Next());
+        }
+
+        private ps.Normal facilitySeizeTime = new ps.Normal(6, 3);
     }
 }

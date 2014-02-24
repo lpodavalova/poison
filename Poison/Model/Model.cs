@@ -115,7 +115,6 @@ namespace Poison.Model
                 g.Final();
             }
 
-
             foreach (Facility f in Facilities)
             {
                 f.Final();

@@ -23,7 +23,7 @@ namespace Poison.Model
 {
     public class Generator : IModelEntity
     {
-        public Generator(string name, IDistribution distribution, TransactHandler handler)
+        public Generator(string name, IDistribution distribution)
         {
             if (name == null)
             {
@@ -35,13 +35,7 @@ namespace Poison.Model
                 throw new ArgumentNullException("distribution");
             }
 
-            if (handler == null)
-            {
-                throw new ArgumentNullException("handler");
-            }
-
             Distribution = distribution;
-            this.handler = handler;
             Name = name;
         }
 
@@ -83,7 +77,18 @@ namespace Poison.Model
             }
         }
 
-        private TransactHandler handler;
+        private event TransactHandler _Entered;
+        public event TransactHandler Entered 
+        {
+            add { _Entered += value; }
+            remove { _Entered -= value; }
+        }
+
+        private void OnEntered(Transact transact)
+        {
+            if (_Entered != null)
+                _Entered(Model, transact);
+        }
 
         private void EnterTransact()
         {
@@ -91,10 +96,10 @@ namespace Poison.Model
 
             GenerateEvent();
 
-            handler(Model,transact);
+            OnEntered(transact);
         }
 
-        public void GenerateEvent()
+        internal void GenerateEvent()
         {
             double time = Distribution.Next();
 

@@ -48,17 +48,14 @@ namespace Poison.Model
             internal set;
         }
 
-        public void Enqueue(Transact transact, TransactHandler transactHandler)
+        public void Enqueue(Transact transact)
         {
             if (transact == null)
             {
                 throw new ArgumentNullException("transact");
             }
 
-            if (transactHandler == null)
-            {
-                throw new ArgumentNullException("transactHandler");
-            }
+            bool fireNewItem = queue.Count == 0;
 
             UpdateLastCountChanged();
 
@@ -70,32 +67,33 @@ namespace Poison.Model
                 Max = queue.Count;
             }
 
-            while (Model.IsAlive() && queue.Peek().Transact != transact)
+            if (fireNewItem)
             {
-                Model.ProcessEvent();
+                OnNewItem(transact);
             }
-
-            if (!Model.IsAlive())
-            {
-                return;
-            }
-
-            transactHandler(Model, transact);
         }
 
-        public void Dequeue(Transact transact)
+        private event TransactHandler _NewItem;
+        public event TransactHandler NewItem
         {
-            if (transact == null)
+            add { _NewItem += value; }
+            remove { _NewItem -= value; }
+        }
+
+        private void OnNewItem(Transact transact)
+        {
+            if (_NewItem != null)
+                _NewItem(Model, transact);
+        }
+
+        public Transact Dequeue()
+        {
+            if (queue.Count <= 0)
             {
-                throw new ArgumentNullException("transact");
+                return null;
             }
 
             TransactQueueInfo info = queue.Peek();
-
-            if (info.Transact != transact)
-            {
-                // TODO: throw exception
-            }
 
             if (info.QueuingTime == Model.Time)
             {
@@ -106,6 +104,15 @@ namespace Poison.Model
             sumTransactQueueStayTime += Model.Time - info.QueuingTime;
 
             queue.Dequeue();
+            Transact transact = info.Transact;
+
+            if (queue.Count > 0)
+            {
+                info = queue.Peek();
+                OnNewItem(info.Transact);
+            }
+
+            return transact;
         }
 
         string IModelEntity.Name

@@ -18,5 +18,5 @@
 
 namespace Poison.Model
 {
-    public delegate void TransactHandler(Model model, Transact transact);
+    public delegate void TransactHandler<in T>(T obj, Transact transact);
 }

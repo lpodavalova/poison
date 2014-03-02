@@ -24,7 +24,7 @@ namespace Poison.Model
 {
     public class Queue : IModelEntity
     {
-        private Queue<TransactQueueInfo> queue = new Queue<TransactQueueInfo>();
+        private readonly Queue<TransactQueueInfo> queue = new Queue<TransactQueueInfo>();
 
         public Queue(string name)
         {
@@ -73,8 +73,35 @@ namespace Poison.Model
             }
         }
 
-        private event TransactHandler _NewItem;
-        public event TransactHandler NewItem
+        private event InitFinalHandler<Queue> _Init;
+        public event InitFinalHandler<Queue> Initialization
+        {
+            add { _Init += value; }
+            remove { _Init -= value; }
+        }
+
+        private void OnInit()
+        {
+            if (_Init != null)
+                _Init(this);
+        }
+
+        private event InitFinalHandler<Queue> _Final;
+        public event InitFinalHandler<Queue> Finalization
+        {
+            add { _Final += value; }
+            remove { _Final -= value; }
+        }
+
+        private void OnFinal()
+        {
+            if (_Final != null)
+                _Final(this);
+        }
+
+
+        private event TransactHandler<Queue>  _NewItem;
+        public event TransactHandler<Queue>  NewItem
         {
             add { _NewItem += value; }
             remove { _NewItem -= value; }
@@ -83,7 +110,7 @@ namespace Poison.Model
         private void OnNewItem(Transact transact)
         {
             if (_NewItem != null)
-                _NewItem(Model, transact);
+                _NewItem(this, transact);
         }
 
         public Transact Dequeue()

@@ -77,8 +77,35 @@ namespace Poison.Model
             }
         }
 
-        private event TransactHandler _Entered;
-        public event TransactHandler Entered 
+        private event InitFinalHandler<Generator> _Init;
+        public event InitFinalHandler<Generator> Initialization
+        {
+            add { _Init += value; }
+            remove { _Init -= value; }
+        }
+
+        private void OnInit()
+        {
+            if (_Init != null)
+                _Init(this);
+        }
+
+        private event InitFinalHandler<Generator> _Final;
+        public event InitFinalHandler<Generator> Finalization
+        {
+            add { _Final += value; }
+            remove { _Final -= value; }
+        }
+
+        private void OnFinal()
+        {
+            if (_Final != null)
+                _Final(this);
+        }
+
+
+        private event TransactHandler<Generator> _Entered;
+        public event TransactHandler<Generator> Entered 
         {
             add { _Entered += value; }
             remove { _Entered -= value; }
@@ -87,7 +114,7 @@ namespace Poison.Model
         private void OnEntered(Transact transact)
         {
             if (_Entered != null)
-                _Entered(Model, transact);
+                _Entered(this, transact);
         }
 
         private void EnterTransact()
@@ -115,12 +142,12 @@ namespace Poison.Model
 
         internal void Init()
         {
-
+            OnInit();
         }
 
         internal void Final()
         {
-
+            OnFinal();
         }
     }
 }

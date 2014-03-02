@@ -18,11 +18,11 @@
 
 using System;
 using Poison.Collections;
-using Poison.Model.Enums;
+using Poison.Stochastic;
 
 namespace Poison.Model
 {
-    public class Model
+    public abstract class Model
     {
         public Model()
         {
@@ -35,10 +35,31 @@ namespace Poison.Model
             Time = 0;
         }
 
-        public int RemainingCounter
+        public Generator AddNewGenerator(string name, IDistribution distribution)
         {
-            get;
-            private set;
+            Generator generator = new Generator(name, distribution);
+
+            Generators.Add(generator);
+
+            return generator;
+        }
+
+        public Facility AddNewFacility(string name)
+        {
+            Facility facility = new Facility(name);
+
+            Facilities.Add(facility);
+
+            return facility;
+        }
+
+        public Queue AddNewQueue(string name)
+        {
+            Queue queue = new Queue(name);
+
+            Queues.Add(queue);
+
+            return queue;
         }
 
         public double Time
@@ -71,15 +92,8 @@ namespace Poison.Model
             private set;            
         }
 
-        public void Simulate(int initialRemainingCounter)
+        public void Simulate()
         {
-            if (initialRemainingCounter < 0)
-            {
-                throw new ArgumentException("initialRemainingCounter should be more or equal to zero");
-            }
-
-            RemainingCounter = initialRemainingCounter;
-
             foreach (Facility f in Facilities)
             {
                 f.Init();
@@ -100,7 +114,7 @@ namespace Poison.Model
                 g.GenerateEvent();                
             }
 
-            while (IsAlive())
+            while (IsAlive() && EventQueue.Count > 0)
             {
                 ProcessEvent();
             }
@@ -121,10 +135,7 @@ namespace Poison.Model
             }
         }
 
-        internal bool IsAlive()
-        {
-            return RemainingCounter > 0 && EventQueue.Count > 0;
-        }
+        protected abstract bool IsAlive();
 
         public void Advance(double value, Transact transact, TransactHandler transactHandler)
         {
@@ -143,22 +154,14 @@ namespace Poison.Model
                 value = 0;
             }
 
-            EventQueue.Enqueue(new Event(Time + value, new EventHandler(delegate() 
-                {
-                    transactHandler(this, transact);
-                })));
+            EventQueue.Enqueue(new Event(Time + value, () => transactHandler(this, transact)));
 
             while (IsAlive())
             {
                 ProcessEvent();
             }
         }
-
-        public void Terminate(int count)
-        {
-            RemainingCounter -= count;
-        }
-
+        
         internal void ProcessEvent()
         {
             Event ev = EventQueue.Dequeue();

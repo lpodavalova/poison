@@ -72,49 +72,75 @@ namespace Poison.Model
             private set;
         }
 
-        public int Entries
-        {
-            get;
-            internal set;
-        }
-
-        #region Statistics
-
-        public double AverageTime
-        {
-            get
-            {
-                return seizeTime.SmartDiv(Entries);
-            }
-        }
-
-        public double Utilization
-        {
-            get
-            {
-                return seizeTime / Model.Time;
-            }
-        }
-
         public Transact Owner
         {
-            get; 
-            private set;
-        }
-
-        public Transact LastOwner
-        {
             get;
             private set;
         }
 
-        #endregion
+        //#region Statistics
 
-        private double seizeTime;
-        private double timeStart;
+        //public int Entries
+        //{
+        //    get;
+        //    internal set;
+        //}
 
-        private event TransactHandler _Released;
-        public event TransactHandler Released
+        //public double AverageTime
+        //{
+        //    get
+        //    {
+        //        return seizeTime.SmartDiv(Entries);
+        //    }
+        //}
+
+        //public double Utilization
+        //{
+        //    get
+        //    {
+        //        return seizeTime / Model.Time;
+        //    }
+        //}
+
+        //public Transact LastOwner
+        //{
+        //    get;
+        //    private set;
+        //}
+
+        //private double seizeTime;
+        //private double timeStart;
+
+        //#endregion
+
+        private event InitFinalHandler<Facility> _Init;
+        public event InitFinalHandler<Facility> Initialization
+        {
+            add { _Init += value; }
+            remove { _Init -= value; }
+        }
+
+        private void OnInit()
+        {
+            if (_Init != null)
+                _Init(this);
+        }
+
+        private event InitFinalHandler<Facility> _Final;
+        public event InitFinalHandler<Facility> Finalization
+        {
+            add { _Final += value; }
+            remove { _Final -= value; }
+        }
+
+        private void OnFinal()
+        {
+            if (_Final != null)
+                _Final(this);
+        }
+
+        private event TransactHandler<Facility> _Released;
+        public event TransactHandler<Facility> Released
         {
             add { _Released += value; }
             remove { _Released -= value; }
@@ -123,11 +149,37 @@ namespace Poison.Model
         private void OnReleased(Transact transact)
         {
             if (_Released != null)
-                _Released(Model, transact);
+                _Released(this, transact);
         }
 
-        private event TransactHandler _Seized;
-        public event TransactHandler Seized
+        private event TransactHandler<Facility> _Releasing;
+        public event TransactHandler<Facility> Releasing
+        {
+            add { _Releasing += value; }
+            remove { _Releasing -= value; }
+        }
+
+        private void OnReleasing(Transact transact)
+        {
+            if (_Releasing != null)
+                _Releasing(this, transact);
+        }
+
+        private event TransactHandler<Facility> _Seizing;
+        public event TransactHandler<Facility> Seizing
+        {
+            add { _Seizing += value; }
+            remove { _Seizing -= value; }
+        }
+
+        private void OnSeizing(Transact transact)
+        {
+            if (_Seizing != null)
+                _Seizing(this, transact);
+        }
+
+        private event TransactHandler<Facility> _Seized;
+        public event TransactHandler<Facility> Seized
         {
             add { _Seized += value; }
             remove { _Seized -= value; }
@@ -136,7 +188,7 @@ namespace Poison.Model
         private void OnSeized(Transact transact)
         {
             if (_Seized != null)
-                _Seized(Model, transact);
+                _Seized(this, transact);
         }
 
         public void Seize(Transact transact, double advanceTime)
@@ -148,11 +200,18 @@ namespace Poison.Model
 
             // TODO: exception if already seized
 
+            OnSeizing(transact);
+
+            if (Math.Sign(advanceTime) < 0)
+            {
+                advanceTime = 0;
+            }
+
             Model.EventQueue.Enqueue(new Event(Model.Time + advanceTime, Release));
 
-            Entries++;
-            timeStart = Model.Time;
-            LastOwner = transact;
+            //Entries++;
+            //timeStart = Model.Time;
+            //LastOwner = transact;
 
             State = FacilityState.Busy;
             Owner = transact;
@@ -162,9 +221,11 @@ namespace Poison.Model
 
         private void Release()
         {
+            OnReleasing(Owner);
+
             State = FacilityState.Free;
 
-            seizeTime += Model.Time - timeStart;
+            //seizeTime += Model.Time - timeStart;
 
             Transact transact = Owner;
             Owner = null;
@@ -174,17 +235,19 @@ namespace Poison.Model
 
         internal void Init()
         {
-            Entries = 0;
-            seizeTime = 0.0;
-            LastOwner = null;
+            OnInit();
+            //Entries = 0;
+            //seizeTime = 0.0;
+            //LastOwner = null;
         }
 
         internal void Final()
         {
-            if (State != FacilityState.Free)
-            {
-                seizeTime += Model.Time - timeStart;
-            }
+            OnFinal();
+        //    if (State != FacilityState.Free)
+        //    {
+        //        seizeTime += Model.Time - timeStart;
+        //    }
         }
     }
 }

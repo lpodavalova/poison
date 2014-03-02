@@ -47,6 +47,7 @@
     <Compile Include="Model\Generator.cs" />
     <Compile Include="Model\GeneratorCollection.cs" />
     <Compile Include="Model\IModelEntity.cs" />
+    <Compile Include="Model\InitFinalHandler.cs" />
     <Compile Include="Model\Model.cs" />
     <Compile Include="Collectioins\PriorityQueue.cs" />
     <Compile Include="Model\ModelEntityCollection.cs" />
@@ -67,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Statistics\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

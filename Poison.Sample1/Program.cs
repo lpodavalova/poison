@@ -44,7 +44,7 @@ namespace Poison.Sample1
             f.Released += OnReleasedF2;
             model.Facilities.Add(f);
 
-            model.Simulate(10000);
+            model.Simulate(1000000);
 
             Console.WriteLine("START TIME: {0}", 0.0);
             Console.WriteLine("END TIME: {0}", model.Time);

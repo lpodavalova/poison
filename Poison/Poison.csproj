@@ -50,8 +50,13 @@
     <Compile Include="Modelling\Model.cs" />
     <Compile Include="Collectioins\PriorityQueue.cs" />
     <Compile Include="Modelling\ModelEntityCollection.cs" />
+    <Compile Include="Modelling\ModelObjects.cs" />
     <Compile Include="Modelling\Queue.cs" />
     <Compile Include="Modelling\QueueCollection.cs" />
+    <Compile Include="Modelling\ReadOnlyFacilityCollection.cs" />
+    <Compile Include="Modelling\ReadOnlyGeneratorCollection.cs" />
+    <Compile Include="Modelling\ReadOnlyModelEntityCollection.cs" />
+    <Compile Include="Modelling\ReadOnlyQueueCollection.cs" />
     <Compile Include="Modelling\TransactQueueInfo.cs" />
     <Compile Include="Statistics\FacilityStat.cs" />
     <Compile Include="Statistics\GeneratorStat.cs" />

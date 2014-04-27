@@ -17,6 +17,7 @@
 */
 
 using System;
+using System.Linq;
 using Poison.Collections;
 using Poison.Stochastic;
 
@@ -24,11 +25,19 @@ namespace Poison.Modelling
 {
     public abstract class Model
     {
+        private QueueCollection queues;
+        private FacilityCollection facilities;
+        private GeneratorCollection generators;
+
         public Model()
         {
-            Queues = new QueueCollection(this);
-            Facilities = new FacilityCollection(this);
-            Generators = new GeneratorCollection(this);
+            queues = new QueueCollection(this);
+            facilities = new FacilityCollection(this);
+            generators = new GeneratorCollection(this);
+
+            Queues = new ReadOnlyQueueCollection(queues);
+            Facilities = new ReadOnlyFacilityCollection(facilities);
+            Generators = new ReadOnlyGeneratorCollection(generators);
 
             EventQueue = new PriorityQueue<Event>();
 
@@ -41,19 +50,19 @@ namespace Poison.Modelling
             private set;
         }
 
-        public QueueCollection Queues
+        protected ReadOnlyQueueCollection Queues
         {
             get;
             private set;
         }
 
-        public FacilityCollection Facilities
+        protected ReadOnlyFacilityCollection Facilities
         {
             get;
             private set;
         }
 
-        public GeneratorCollection Generators
+        protected ReadOnlyGeneratorCollection Generators
         {
             get;
             private set;
@@ -67,22 +76,57 @@ namespace Poison.Modelling
 
         public void Simulate()
         {
-            foreach (Facility f in Facilities)
+            ModelObjects objects = new ModelObjects(this);
+            Time = 0;
+
+            queues.Clear();
+            facilities.Clear();
+            generators.Clear();
+
+            EventQueue.Clear();
+
+            Describe(objects);
+
+            Facility[] facilityArray = objects.Facilities.ToArray();
+            objects.Facilities.Clear();
+
+            foreach (Facility f in facilityArray)
+            {
+                facilities.Add(f);
+            }
+
+            Generator[] GeneratorArray = objects.Generators.ToArray();
+            objects.Generators.Clear();
+
+            foreach (Generator g in GeneratorArray)
+            {
+                generators.Add(g);
+            }
+
+            Queue[] queueArray = objects.Queues.ToArray();
+            objects.Queues.Clear();
+
+            foreach (Queue q in queueArray)
+            {
+                queues.Add(q);
+            }
+
+            foreach (Facility f in facilities)
             {
                 f.Init();
             }
 
-            foreach (Generator g in Generators)
+            foreach (Generator g in generators)
             {
                 g.Init();
             }
 
-            foreach (Queue q in Queues)
+            foreach (Queue q in queues)
             {
                 q.Init();
             }
 
-            foreach (Generator g in Generators)
+            foreach (Generator g in generators)
             {
                 g.GenerateEvent();                
             }
@@ -92,17 +136,17 @@ namespace Poison.Modelling
                 ProcessEvent();
             }
 
-            foreach (Queue q in Queues)
+            foreach (Queue q in queues)
             {
                 q.Final();
             }
 
-            foreach (Generator g in Generators)
+            foreach (Generator g in generators)
             {
                 g.Final();
             }
 
-            foreach (Facility f in Facilities)
+            foreach (Facility f in facilities)
             {
                 f.Final();
             }
@@ -110,7 +154,9 @@ namespace Poison.Modelling
 
         protected abstract bool IsAlive();
 
-        public void Advance(double value, EventHandler eventHandler)
+        protected abstract void Describe(ModelObjects modelObjects);
+
+        protected void Advance(double value, EventHandler eventHandler)
         {
             if (eventHandler == null)
             {

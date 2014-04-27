@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using pm = Poison.Model;
+using Poison.Modelling;
 
 namespace Poison.Train
 {
     public class Train
     {
+        /*
         const string generator1Name = "g1";
         const string queue1Name = "q1";
         const string facility1Name = "f1";
@@ -155,5 +156,6 @@ namespace Poison.Train
             model.Queues[queue2Name].Dequeue(transact);
             model.Facilities[facility2Name].Seize(transact, Advance2);
         }
+         */
     }
 }

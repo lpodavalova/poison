@@ -16,22 +16,8 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
-
-namespace Poison.Stochastic
+namespace Poison.Modelling
 {
-    class Random : IRandom
-    {
-        private System.Random random;
-            
-        public Random()
-        {
-            random = new System.Random();
-        }
-
-        public double Next()
-        {
-            return random.NextDouble();
-        }
-    }
+    public delegate void EventHandler();
+    public delegate void EventHandler<in T>(T obj);
 }

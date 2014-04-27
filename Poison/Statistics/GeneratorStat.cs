@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,15 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Poison.Model
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Poison.Statistics
 {
-    delegate void EventHandler();
+    public class GeneratorStat
+    {
+
+    }
 }

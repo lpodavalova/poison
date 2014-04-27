@@ -16,22 +16,14 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
-
-namespace Poison.Stochastic
+namespace Poison.Modelling
 {
-    class Random : IRandom
+    public class FacilityCollection : ModelEntityCollection<Facility>
     {
-        private System.Random random;
-            
-        public Random()
+        public FacilityCollection(Model model) 
+            : base(model)
         {
-            random = new System.Random();
-        }
 
-        public double Next()
-        {
-            return random.NextDouble();
         }
     }
 }

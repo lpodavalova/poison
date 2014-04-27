@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 using System;
 using Poison.Stochastic;
 
-namespace Poison.Model
+namespace Poison.Modelling
 {
     public class Generator : IModelEntity
     {
@@ -77,8 +77,8 @@ namespace Poison.Model
             }
         }
 
-        private event InitFinalHandler<Generator> _Init;
-        public event InitFinalHandler<Generator> Initialization
+        private event EventHandler<Generator> _Init;
+        public event EventHandler<Generator> Initialization
         {
             add { _Init += value; }
             remove { _Init -= value; }
@@ -90,8 +90,8 @@ namespace Poison.Model
                 _Init(this);
         }
 
-        private event InitFinalHandler<Generator> _Final;
-        public event InitFinalHandler<Generator> Finalization
+        private event EventHandler<Generator> _Final;
+        public event EventHandler<Generator> Finalization
         {
             add { _Final += value; }
             remove { _Final -= value; }
@@ -103,9 +103,8 @@ namespace Poison.Model
                 _Final(this);
         }
 
-
-        private event TransactHandler<Generator> _Entered;
-        public event TransactHandler<Generator> Entered 
+        private event EventHandler<Transact> _Entered;
+        public event EventHandler<Transact> Entered 
         {
             add { _Entered += value; }
             remove { _Entered -= value; }
@@ -114,12 +113,12 @@ namespace Poison.Model
         private void OnEntered(Transact transact)
         {
             if (_Entered != null)
-                _Entered(this, transact);
+                _Entered(transact);
         }
 
         private void EnterTransact()
         {
-            Transact transact = new Transact(Model, this);
+            Transact transact = new Transact(this);
 
             GenerateEvent();
 
@@ -128,12 +127,7 @@ namespace Poison.Model
 
         internal void GenerateEvent()
         {
-            double time = Distribution.Next();
-
-            if (Math.Sign(time) < 0)
-            {
-                time = 0;
-            }
+            double time = Math.Abs(Distribution.Next());
 
             Event ev = new Event(Model.Time + time, EnterTransact);
 

@@ -17,21 +17,13 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Poison.Stochastic
+namespace Poison.Statistics
 {
-    class Random : IRandom
+    public class FacilityStat
     {
-        private System.Random random;
-            
-        public Random()
-        {
-            random = new System.Random();
-        }
-
-        public double Next()
-        {
-            return random.NextDouble();
-        }
     }
 }

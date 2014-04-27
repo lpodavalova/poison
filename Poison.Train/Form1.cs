@@ -20,9 +20,9 @@ namespace Poison.Train
 
         private void bt_Run_Click(object sender, EventArgs e)
         {
-            Train train = new Train();
+            //Train train = new Train();
 
-            tb_Stat.Text = train.Simulate();
+            //tb_Stat.Text = train.Simulate();
         }
     }
 }

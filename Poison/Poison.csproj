@@ -41,37 +41,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\DoubleExt.cs" />
-    <Compile Include="Model\FacilityCollection.cs" />
-    <Compile Include="Model\Event.cs" />
-    <Compile Include="Model\EventHandler.cs" />
-    <Compile Include="Model\Generator.cs" />
-    <Compile Include="Model\GeneratorCollection.cs" />
-    <Compile Include="Model\IModelEntity.cs" />
-    <Compile Include="Model\InitFinalHandler.cs" />
-    <Compile Include="Model\Model.cs" />
+    <Compile Include="Modelling\FacilityCollection.cs" />
+    <Compile Include="Modelling\Event.cs" />
+    <Compile Include="Modelling\EventHandler.cs" />
+    <Compile Include="Modelling\Generator.cs" />
+    <Compile Include="Modelling\GeneratorCollection.cs" />
+    <Compile Include="Modelling\IModelEntity.cs" />
+    <Compile Include="Modelling\Model.cs" />
     <Compile Include="Collectioins\PriorityQueue.cs" />
-    <Compile Include="Model\ModelEntityCollection.cs" />
-    <Compile Include="Model\Queue.cs" />
-    <Compile Include="Model\QueueCollection.cs" />
-    <Compile Include="Model\TransactHandler.cs" />
-    <Compile Include="Model\TransactQueueInfo.cs" />
+    <Compile Include="Modelling\ModelEntityCollection.cs" />
+    <Compile Include="Modelling\Queue.cs" />
+    <Compile Include="Modelling\QueueCollection.cs" />
+    <Compile Include="Modelling\TransactQueueInfo.cs" />
+    <Compile Include="Statistics\FacilityStat.cs" />
+    <Compile Include="Statistics\GeneratorStat.cs" />
+    <Compile Include="Statistics\ModelStat.cs" />
+    <Compile Include="Statistics\QueueStat.cs" />
     <Compile Include="Stochastic\IRandom.cs" />
     <Compile Include="Stochastic\Random.cs" />
     <Compile Include="Stochastic\IDistribution.cs" />
     <Compile Include="Stochastic\Normal.cs" />
     <Compile Include="Stochastic\RandomFactory.cs" />
     <Compile Include="Stochastic\Uniform.cs" />
-    <Compile Include="Model\Facility.cs" />
-    <Compile Include="Model\Enums\FacilityState.cs" />
+    <Compile Include="Modelling\Facility.cs" />
+    <Compile Include="Modelling\FacilityState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\Transact.cs" />
+    <Compile Include="Modelling\Transact.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Statistics\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

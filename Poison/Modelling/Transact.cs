@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,69 +18,71 @@
 
 using System;
 
-namespace Poison.Model
+namespace Poison.Modelling
 {
-    class Event : IEquatable<Event>, IComparable<Event>
+    public class Transact : IEquatable<Transact>, IComparable<Transact>
     {
-        public Event(double time, EventHandler handler)
+        internal Transact(Generator generator, int priority = 0)
         {
-            if (Math.Sign(time) < 0)
+            if (generator == null)
             {
-                throw new ArgumentException("time should be more or equal to zero");
+                throw new ArgumentNullException("generator");
             }
 
-            if (handler == null)
-            {
-                throw new ArgumentNullException("handler");
-            }
-
-            Time = time;
-            Handler = handler;
+            Priority = priority;
+            Generator = generator;
+            ID = Guid.NewGuid();
         }
 
-        public double Time
+        public Generator Generator
+        {
+            get;
+            internal set;
+        }
+
+        public Guid ID
         {
             get;
             private set;
         }
 
-        public EventHandler Handler
+        public int Priority
         {
             get;
             private set;
         }
 
-        public static bool operator ==(Event objA, Event objB)
+        public static bool operator ==(Transact objA, Transact objB)
         {
             return Equals(objA, objB);
         }
 
-        public static bool operator !=(Event objA, Event objB)
+        public static bool operator !=(Transact objA, Transact objB)
         {
             return !Equals(objA, objB);
         }
 
-        public static bool operator <(Event objA, Event objB)
+        public static bool operator <(Transact objA, Transact objB)
         {
             return Compare(objA, objB) < 0;
         }
 
-        public static bool operator >(Event objA, Event objB)
+        public static bool operator >(Transact objA, Transact objB)
         {
             return Compare(objA, objB) > 0;
         }
 
-        public static bool operator >=(Event objA, Event objB)
+        public static bool operator >=(Transact objA, Transact objB)
         {
             return Compare(objA, objB) > -1;
         }
 
-        public static bool operator <=(Event objA, Event objB)
+        public static bool operator <=(Transact objA, Transact objB)
         {
             return Compare(objA, objB) < 1;
         }
 
-        public static bool Equals(Event objA, Event objB)
+        public static bool Equals(Transact objA, Transact objB)
         {
             if ((object)objA == null)
             {
@@ -97,7 +99,7 @@ namespace Poison.Model
             return objA.Equals(objB);
         }
 
-        public static int Compare(Event objA, Event objB)
+        public static int Compare(Transact objA, Transact objB)
         {
             if (objA == null)
             {
@@ -123,27 +125,32 @@ namespace Poison.Model
 
         public override int GetHashCode()
         {
-            return Time.GetHashCode();
+            return ID.GetHashCode();
         }
 
-        public bool Equals(Event other)
+        public bool Equals(Transact other)
         {
             if (other == null)
             {
                 return false;
             }
 
-            return Time.Equals(other.Time);
+            return ID.Equals(other.ID);
         }
 
-        public int CompareTo(Event other)
+        public int CompareTo(Transact other)
         {
             if (other == null)
             {
                 return 1;
             }
 
-            return Time.CompareTo(other.Time);
+            return ID.CompareTo(other.ID);
+        }
+
+        public override string ToString()
+        {
+            return ID.ToString();
         }
     }
 }

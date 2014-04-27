@@ -1,16 +1,16 @@
-﻿using Poison.Model.Enums;
-using Poison.Stochastic;
+﻿using Poison.Stochastic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using pm = Poison.Model;
+using Poison.Modelling;
 
 namespace Poison.Sample1
 {
     class Program
     {
+        
         const string generator1Name = "g1";
         const string queue1Name = "q1";
         const string facility1Name = "f1";
@@ -21,6 +21,7 @@ namespace Poison.Sample1
 
         static void Main(string[] args)
         {
+            /*
             pm.Model model = new pm.Model();
 
             pm.Generator generator = new pm.Generator(generator1Name, new Normal(5, 2));
@@ -153,7 +154,7 @@ namespace Poison.Sample1
             else
             {
                 model.Terminate(1);
-            }
+            }*/
         }
     }
 }

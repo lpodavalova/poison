@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace Poison.Model
+namespace Poison.Modelling
 {
     public class ModelEntityCollection<T> : IEnumerable<T>, IEnumerable where T : IModelEntity 
     {

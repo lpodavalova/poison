@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ using System;
 using Poison.Collections;
 using Poison.Stochastic;
 
-namespace Poison.Model
+namespace Poison.Modelling
 {
     public abstract class Model
     {
@@ -34,34 +34,7 @@ namespace Poison.Model
 
             Time = 0;
         }
-
-        public Generator AddNewGenerator(string name, IDistribution distribution)
-        {
-            Generator generator = new Generator(name, distribution);
-
-            Generators.Add(generator);
-
-            return generator;
-        }
-
-        public Facility AddNewFacility(string name)
-        {
-            Facility facility = new Facility(name);
-
-            Facilities.Add(facility);
-
-            return facility;
-        }
-
-        public Queue AddNewQueue(string name)
-        {
-            Queue queue = new Queue(name);
-
-            Queues.Add(queue);
-
-            return queue;
-        }
-
+        
         public double Time
         {
             get;
@@ -137,29 +110,19 @@ namespace Poison.Model
 
         protected abstract bool IsAlive();
 
-        public void Advance(double value, Transact transact, TransactHandler transactHandler)
+        public void Advance(double value, EventHandler eventHandler)
         {
-            if (transact == null)
+            if (eventHandler == null)
             {
-                throw new ArgumentNullException("transact");
-            }
-
-            if (transactHandler == null)
-            {
-                throw new ArgumentNullException("transactHandler");
+                throw new ArgumentNullException("eventHandler");
             }
 
             if (Math.Sign(value) < 0)
             {
-                value = 0;
+                throw new ArgumentException("Parameter `value` cannot be less than zero");
             }
 
-            EventQueue.Enqueue(new Event(Time + value, () => transactHandler(this, transact)));
-
-            while (IsAlive())
-            {
-                ProcessEvent();
-            }
+            EventQueue.Enqueue(new Event(Time + value, eventHandler));
         }
         
         internal void ProcessEvent()

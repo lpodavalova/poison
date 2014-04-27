@@ -1,6 +1,6 @@
 ﻿/*
 * The Poison: discrete event simulation system.
-* Copyright (C) 2006-2013 Poison team.
+* Copyright (C) 2006-2014 Poison team.
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,83 +18,69 @@
 
 using System;
 
-namespace Poison.Model
+namespace Poison.Modelling
 {
-    public class Transact : IEquatable<Transact>, IComparable<Transact>
+    class Event : IEquatable<Event>, IComparable<Event>
     {
-        internal Transact(Model model, Generator generator, int priority = 0)
+        public Event(double time, EventHandler handler)
         {
-            if (model == null)
+            if (Math.Sign(time) < 0)
             {
-                throw new ArgumentNullException("model");
+                throw new ArgumentException("Parameter `time` cannot be less than zero.");
             }
 
-            if (generator == null)
+            if (handler == null)
             {
-                throw new ArgumentNullException("generator");
+                throw new ArgumentNullException("handler");
             }
 
-            Priority = priority;
-            Model = model;
-            Generator = generator;
-            ID = Guid.NewGuid();
+            Time = time;
+            Handler = handler;
         }
 
-        public Model Model
-        {
-            get;
-            internal set;
-        }
-
-        public Generator Generator
-        {
-            get;
-            internal set;
-        }
-
-        public Guid ID
+        public double Time
         {
             get;
             private set;
         }
 
-        public int Priority
+        public EventHandler Handler
         {
             get;
             private set;
         }
 
-        public static bool operator ==(Transact objA, Transact objB)
+        public static bool operator ==(Event objA, Event objB)
         {
             return Equals(objA, objB);
         }
 
-        public static bool operator !=(Transact objA, Transact objB)
+        public static bool operator !=(Event objA, Event objB)
         {
             return !Equals(objA, objB);
         }
 
-        public static bool operator <(Transact objA, Transact objB)
+        public static bool operator <(Event objA, Event objB)
         {
             return Compare(objA, objB) < 0;
         }
 
-        public static bool operator >(Transact objA, Transact objB)
+        public static bool operator >(Event objA, Event objB)
         {
             return Compare(objA, objB) > 0;
         }
 
-        public static bool operator >=(Transact objA, Transact objB)
+        public static bool operator >=(Event objA, Event objB)
         {
             return Compare(objA, objB) > -1;
         }
 
-        public static bool operator <=(Transact objA, Transact objB)
+        public static bool operator <=(Event objA, Event objB)
         {
             return Compare(objA, objB) < 1;
         }
 
-        public static bool Equals(Transact objA, Transact objB)
+        public static bool Equals(Event objA, Event objB)
         {
             if ((object)objA == null)
             {
@@ -111,7 +97,7 @@ namespace Poison.Model
             return objA.Equals(objB);
         }
 
-        public static int Compare(Transact objA, Transact objB)
+        public static int Compare(Event objA, Event objB)
         {
             if (objA == null)
             {
@@ -137,32 +123,27 @@ namespace Poison.Model
 
         public override int GetHashCode()
         {
-            return ID.GetHashCode();
+            return Time.GetHashCode();
         }
 
-        public bool Equals(Transact other)
+        public bool Equals(Event other)
         {
             if (other == null)
             {
                 return false;
             }
 
-            return ID.Equals(other.ID);
+            return Time.Equals(other.Time);
         }
 
-        public int CompareTo(Transact other)
+        public int CompareTo(Event other)
         {
             if (other == null)
             {
                 return 1;
             }
 
-            return ID.CompareTo(other.ID);
-        }
-
-        public override string ToString()
-        {
-            return ID.ToString();
+            return Time.CompareTo(other.Time);
         }
     }
 }

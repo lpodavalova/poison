@@ -138,21 +138,21 @@ namespace Poison.Modelling
                 _Final(this);
         }
 
-        private event EventHandler<Facility> _Released;
-        public event EventHandler<Facility> Released
+        private event EventHandler<Facility, Transact> _Released;
+        public event EventHandler<Facility, Transact> Released
         {
             add { _Released += value; }
             remove { _Released -= value; }
         }
 
-        private void OnReleased()
+        private void OnReleased(Transact transact)
         {
             if (_Released != null)
-                _Released(this);
+                _Released(this, transact);
         }
 
-        private event EventHandler<Transact> _Releasing;
-        public event EventHandler<Transact> Releasing
+        private event EventHandler<Facility, Transact> _Releasing;
+        public event EventHandler<Facility, Transact> Releasing
         {
             add { _Releasing += value; }
             remove { _Releasing -= value; }
@@ -161,11 +161,11 @@ namespace Poison.Modelling
         private void OnReleasing(Transact transact)
         {
             if (_Releasing != null)
-                _Releasing(transact);
+                _Releasing(this, transact);
         }
 
-        private event EventHandler<Transact> _Seizing;
-        public event EventHandler<Transact> Seizing
+        private event EventHandler<Facility, Transact> _Seizing;
+        public event EventHandler<Facility, Transact> Seizing
         {
             add { _Seizing += value; }
             remove { _Seizing -= value; }
@@ -174,20 +174,20 @@ namespace Poison.Modelling
         private void OnSeizing(Transact transact)
         {
             if (_Seizing != null)
-                _Seizing(transact);
+                _Seizing(this, transact);
         }
 
-        private event EventHandler<Facility> _Seized;
-        public event EventHandler<Facility> Seized
+        private event EventHandler<Facility, Transact> _Seized;
+        public event EventHandler<Facility, Transact> Seized
         {
             add { _Seized += value; }
             remove { _Seized -= value; }
         }
 
-        private void OnSeized()
+        private void OnSeized(Transact transact)
         {
             if (_Seized != null)
-                _Seized(this);
+                _Seized(this, transact);
         }
 
         public void Seize(Transact transact)
@@ -213,7 +213,7 @@ namespace Poison.Modelling
             State = FacilityState.Busy;
             Owner = transact;
 
-            OnSeized();
+            OnSeized(transact);
         }
 
         public Transact Release()
@@ -232,7 +232,7 @@ namespace Poison.Modelling
             Transact transact = Owner;
             Owner = null;
 
-            OnReleased();
+            OnReleased(transact);
 
             return transact;
         }

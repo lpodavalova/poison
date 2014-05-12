@@ -20,4 +20,5 @@ namespace Poison.Modelling
 {
     public delegate void EventHandler(object param);
     public delegate void EventHandler<in T>(T obj);
+    public delegate void EventHandler<in T1, in T2>(T1 obj1, T2 obj2);
 }

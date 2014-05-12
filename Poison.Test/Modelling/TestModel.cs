@@ -38,7 +38,7 @@ namespace Poison.Test.Modelling
             Queues[queue1].Enqueue(transact);
         }
 
-        private void TestModel_Enqueued(Queue obj)
+        private void TestModel_Enqueued(Queue obj, Transact transact)
         {
             if (Facilities[facility1].State == FacilityState.Free)
             {
@@ -46,7 +46,7 @@ namespace Poison.Test.Modelling
             }
         }
 
-        private void TestModel_Released(Facility obj)
+        private void TestModel_Released(Facility obj, Transact transact)
         {
             if (!Queues[queue1].Empty)
             {

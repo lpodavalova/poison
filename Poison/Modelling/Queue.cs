@@ -71,7 +71,7 @@ namespace Poison.Modelling
 
             //if (fireNewItem)
             //{
-            OnEnqueued();
+            OnEnqueued(transact);
             //}
         }
 
@@ -101,21 +101,21 @@ namespace Poison.Modelling
                 _Final(this);
         }
 
-        private event EventHandler<Queue> _Enqueued;
-        public event EventHandler<Queue> Enqueued
+        private event EventHandler<Queue, Transact> _Enqueued;
+        public event EventHandler<Queue, Transact> Enqueued
         {
             add { _Enqueued += value; }
             remove { _Enqueued -= value; }
         }
 
-        private void OnEnqueued()
+        private void OnEnqueued(Transact transact)
         {
             if (_Enqueued != null)
-                _Enqueued(this);
+                _Enqueued(this, transact);
         }
 
-        private event EventHandler<Transact> _Enqueueing;
-        public event EventHandler<Transact> Enqueueing
+        private event EventHandler<Queue, Transact> _Enqueueing;
+        public event EventHandler<Queue, Transact> Enqueueing
         {
             add { _Enqueueing += value; }
             remove { _Enqueueing -= value; }
@@ -124,11 +124,11 @@ namespace Poison.Modelling
         private void OnEnqueueing(Transact transact)
         {
             if (_Enqueueing != null)
-                _Enqueueing(transact);
+                _Enqueueing(this, transact);
         }
 
-        private event EventHandler<Transact> _Dequeued;
-        public event EventHandler<Transact> Dequeued
+        private event EventHandler<Queue, Transact> _Dequeued;
+        public event EventHandler<Queue, Transact> Dequeued
         {
             add { _Dequeued += value; }
             remove { _Dequeued -= value; }
@@ -137,27 +137,27 @@ namespace Poison.Modelling
         private void OnDequeued(Transact transact)
         {
             if (_Dequeued != null)
-                _Dequeued(transact);
+                _Dequeued(this, transact);
         }
 
-        private event EventHandler<Queue> _Dequeueing;
-        public event EventHandler<Queue> Dequeueing
+        private event EventHandler<Queue, Transact> _Dequeueing;
+        public event EventHandler<Queue, Transact> Dequeueing
         {
             add { _Dequeueing += value; }
             remove { _Dequeueing -= value; }
         }
 
-        private void OnDequeueing()
+        private void OnDequeueing(Transact transact)
         {
             if (_Dequeueing != null)
-                _Dequeueing(this);
+                _Dequeueing(this, transact);
         }
 
         public Transact Dequeue()
         {
             TransactQueueInfo info = queue.Peek();
 
-            OnDequeueing();
+            OnDequeueing(info.Transact);
 
             //if (info.QueuingTime == Model.Time)
             //{

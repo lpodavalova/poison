@@ -156,7 +156,7 @@ namespace Poison.Modelling
 
         protected abstract void Describe(ModelObjects modelObjects);
 
-        protected void Advance(double value, EventHandler eventHandler)
+        protected void Advance(double value, EventHandler eventHandler, object param = null)
         {
             if (eventHandler == null)
             {
@@ -168,7 +168,7 @@ namespace Poison.Modelling
                 throw new ArgumentException("Parameter `value` cannot be less than zero");
             }
 
-            EventQueue.Enqueue(new Event(Time + value, eventHandler));
+            EventQueue.Enqueue(new Event(Time + value, eventHandler, param));
         }
         
         internal void ProcessEvent()
@@ -177,7 +177,7 @@ namespace Poison.Modelling
 
             Time = ev.Time;
 
-            ev.Handler();
+            ev.Handler(ev.Param);
         }
     }
 }

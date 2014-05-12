@@ -22,7 +22,7 @@ namespace Poison.Modelling
 {
     class Event : IEquatable<Event>, IComparable<Event>
     {
-        public Event(double time, EventHandler handler)
+        public Event(double time, EventHandler handler, object param = null)
         {
             if (Math.Sign(time) < 0)
             {
@@ -34,8 +34,15 @@ namespace Poison.Modelling
                 throw new ArgumentNullException("handler");
             }
 
+            Param = param;
             Time = time;
             Handler = handler;
+        }
+
+        public object Param
+        {
+            get;
+            private set;
         }
 
         public double Time

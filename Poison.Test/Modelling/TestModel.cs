@@ -62,7 +62,7 @@ namespace Poison.Test.Modelling
             Advance(Math.Abs(facilitySeizeTime.Next()), ReleaseFacility);
         }
 
-        private void ReleaseFacility()
+        private void ReleaseFacility(object param)
         {
             Facilities[facility1].Release();
         }

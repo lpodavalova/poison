@@ -116,7 +116,7 @@ namespace Poison.Modelling
                 _Entered(transact);
         }
 
-        private void EnterTransact()
+        private void EnterTransact(object param)
         {
             Transact transact = new Transact(this);
 

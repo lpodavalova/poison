@@ -18,6 +18,6 @@
 
 namespace Poison.Modelling
 {
-    public delegate void EventHandler();
+    public delegate void EventHandler(object param);
     public delegate void EventHandler<in T>(T obj);
 }

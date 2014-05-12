@@ -5,157 +5,178 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Poison.Modelling;
+using System.Globalization;
 
 namespace Poison.Train
 {
-    public class Train
+    public class Train : Model
     {
-        /*
-        const string generator1Name = "g1";
-        const string queue1Name = "q1";
-        const string facility1Name = "f1";
+        private const int intervalCount = 100;
+        private const string trainGenerator = "train";
+        private const string inputQueue = "inputQueue";
+        private const string semaphorePrefix = "semaphore";
+        private const string intervalPrefix = "interval";
 
-        const string generator2Name = "g2";
-        const string queue2Name = "q2";
-        const string facility2Name = "f2";
+        private const double intervalAvgTime80 = 1.5;
+        private const double intervalAvgTime60 = 2.0;
+        private const double intervalStdDevTime80 = 0.1;
+        private const double intervalStdDevTime60 = 0.1;
 
-        private pm.Model _Model;
+        private IDistribution intervalTime80 = new Normal(intervalAvgTime80, intervalStdDevTime80);
+        private IDistribution intervalTime60 = new Normal(intervalAvgTime60, intervalStdDevTime60);
 
-        public Train()        
+        /// <summary>
+        /// Время жизни модели в минутах.
+        /// </summary>
+        private int lifeTime = 60 * 24 * 7;
+        
+        protected override bool IsAlive()
         {
-            _Model = new pm.Model();
-
-            _Model.Generators.Add(new pm.Generator(generator1Name, new Normal(5, 2), G1EntryPoint));
-            _Model.Queues.Add(new pm.Queue(queue1Name));
-            _Model.Facilities.Add(new pm.Facility(facility1Name));
-
-            _Model.Generators.Add(new pm.Generator(generator2Name, new Normal(4, 2), G2EntryPoint));
-            _Model.Queues.Add(new pm.Queue(queue2Name));
-            _Model.Facilities.Add(new pm.Facility(facility2Name));
+            return Time <= lifeTime;
         }
 
-        public string Simulate()
+        protected override void Describe(ModelObjects modelObjects)
         {
-            _Model.Simulate(100);
+            Generator generator = new Generator(trainGenerator, new Normal(10, 2));
 
-            return GetStatistics();
-        }
+            generator.Entered += generator_Entered;
 
-        private string GetStatistics()
-        {
-            StringBuilder builder = new StringBuilder();
+            modelObjects.Generators.Add(generator);
 
-            builder.AppendFormat("START TIME: {0}", 0.0);
-            builder.AppendLine();
-            builder.AppendFormat("END TIME: {0}", _Model.Time);
-            builder.AppendLine();
-            builder.AppendFormat("FACILITIES: {0}", _Model.Facilities.Count);
-            builder.AppendLine();
-            builder.AppendFormat("STORAGES: {0}", 0);
-            builder.AppendLine();
-            builder.AppendLine();
-
-            builder.AppendFormat("FACILITIES");
-            builder.AppendLine();
-            builder.AppendLine();
-
-            foreach (pm.Facility facility in _Model.Facilities)
+            for (int i = 0; i < intervalCount; i++)
             {
-                builder.AppendFormat("FACILITY NAME: {0}", facility.Name);
-                builder.AppendLine();
-                builder.AppendFormat("FACILITY ENTRIES: {0}", facility.Entries);
-                builder.AppendLine();
-                builder.AppendFormat("FACILITY UTIL: {0}", facility.Utilization);
-                builder.AppendLine();
-                builder.AppendFormat("FACILITY AVE . TIME: {0}", facility.AverageTime);
-                builder.AppendLine();
-                builder.AppendFormat("FACILITY AVAIL: {0}", facility.State == pm.Enums.FacilityState.Free ? "Yes" : "No");
-                builder.AppendLine();
-                builder.AppendFormat("FACILITY OWNER: {0}", facility.LastOwner);
-                builder.AppendLine();
-                builder.AppendLine();
+                Queue semaphore = new Queue(GetPrefixedName(semaphorePrefix,i));
+
+                semaphore.Enqueued += semaphore_Enqueued;
+                semaphore.Dequeued += semaphore_Dequeued;
+                semaphore.Dequeueing += semaphore_Dequeueing;
+
+                modelObjects.Queues.Add(semaphore);
+
+                Facility interval = new Facility(GetPrefixedName(intervalPrefix,i));
+
+                interval.Released += interval_Released;
+                interval.Releasing += interval_Releasing;
+            }
+        }
+
+        private static string GetPrefixedName(string prefix, int i)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0}_{1}", prefix, i);
+        }
+
+        private static int ExtractNumber(string prefixedName, out string prefix)
+        {
+            prefix = null;
+            int index = prefixedName.LastIndexOf('_');
+
+            if (index < 0)
+            {
+                return -1;
             }
 
-            builder.AppendLine();
+            prefix = prefixedName.Substring(0, index);
 
-            builder.AppendFormat("QUEUES");
-            builder.AppendLine();
-            builder.AppendLine();
+            return int.Parse(prefixedName.Substring(index + 1));
+        }
 
-            foreach (pm.Queue queue in _Model.Queues)
+        private static int ExtractNumber(string prefixedName)
+        {
+            string value;
+            return ExtractNumber(prefixedName, out value);
+        }
+
+        void interval_Released(Facility interval, Transact train)
+        {
+            throw new NotImplementedException();
+        }
+
+        void interval_Releasing(Facility interval, Transact train)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void semaphore_Dequeued(Queue semaphore, Transact train)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void semaphore_Dequeueing(Queue semaphore, Transact train)
+        {
+            int intervalNumber = ExtractNumber(semaphore.Name);
+
+            Facilities[GetPrefixedName(intervalPrefix, intervalNumber)].Seize(train);
+        }
+       
+        private void semaphore_Enqueued(Queue obj, Transact train)
+        {
+            // Если новый транзакт оказывается не первым на семафоре (то есть есть другие транзакты,
+            // ожидающие своей обработки, то транзакт остается в очереди ждать
+            if (obj.Count > 1)
             {
-                builder.AppendFormat("QUEUE NAME: {0}", queue.Name);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE MAX: {0}", queue.Max);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE CONT.: {0}", queue.Count);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE ENTRY: {0}", queue.EntryCount);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE ENTRY (0): {0}", queue.EntryCountZero);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE AVE. CONT.: {0}", queue.AverageCount);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE AVE. TIME: {0}", queue.AverageTime);
-                builder.AppendLine();
-                builder.AppendFormat("QUEUE AVE. TIME (-0): {0}", queue.AverageTimeNonZero);
-                builder.AppendLine();
-                builder.AppendLine();
+                return;
             }
 
-            builder.AppendLine();
+            // извлекаем номер интервала
+            int intervalNum = ExtractNumber(obj.Name);
 
-            return builder.ToString();
-        }
+            // получаем текущий интервал
+            Facility currentInterval = Facilities[GetPrefixedName(intervalPrefix, intervalNum)];
 
-        private static void G1EntryPoint(pm.Model model, pm.Transact transact)
-        {
-            model.Queues[queue1Name].Enqueue(transact, F1EntryPoint);
-        }
-
-        private static void F1EntryPoint(pm.Model model, pm.Transact transact)
-        {
-            model.Queues[queue1Name].Dequeue(transact);
-            model.Facilities[facility1Name].Seize(transact, Advance1);
-        }
-
-        private static void Advance1(pm.Model model, pm.Transact transact)
-        {
-            model.Advance(5.0, transact, Terminate1);
-        }
-
-        private static void Terminate1(pm.Model model, pm.Transact transact)
-        {
-            model.Facilities[facility1Name].Release(transact);
-            model.Terminate(1);
-        }
-
-        private static void G2EntryPoint(pm.Model model, pm.Transact transact)
-        {
-            if (model.Queues.Count() <= 10)
+            // интервал занят? остаемся в очереди
+            if (currentInterval.State == FacilityState.Busy)
             {
-                model.Queues[queue2Name].Enqueue(transact, F2EntryPoint);
+                return; 
             }
-            else
-                model.Queues[queue2Name].Enqueue(transact, Terminate2);
+
+            // интервал последний? проходим на полном ходу
+            if (intervalNum + 1 >= intervalCount)
+            {
+                obj.Dequeue();
+                Advance(intervalStdDevTime80, interval_Train, intervalNum);
+
+                return;
+            }
+
+            Queue nextSemaphore = Queues[GetPrefixedName(semaphorePrefix, intervalNum + 1)];
+            Facility nextInterval = Facilities[GetPrefixedName(intervalPrefix, intervalNum + 1)];
+
+            // перед следующим семафором, а значит на текущем интервале стоит другой поезд? остаемся в очереди
+            if (nextSemaphore.Count > 0)
+            {
+                return;
+            }
+
+            // сейчас в любом случае двигаемся по интервалу, т.к. семафор либо желтый, либо зеленый
+            // поездов гарантировано нет
+            obj.Dequeue();
+
+            // на следующем интерале есть поезд, либо поезд стоит перед следующим семафором?
+            // едем медленно
+            if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < intervalCount && 
+                Queues[GetPrefixedName(semaphorePrefix, intervalNum + 2)].Count > 0)
+            {
+                Advance(intervalStdDevTime60, interval_Train, intervalNum);
+                return;
+            }                
+
+            // едем быстро, преград нет
+            Advance(intervalStdDevTime80, interval_Train, intervalNum);
         }
 
-        private static void Advance2(pm.Model model, pm.Transact transact)
+        private void interval_Train(object param)
         {
-            model.Advance(1.0, transact, Terminate2);
+            int intervalNumber = (int)param;
+
+            Facilities[GetPrefixedName(intervalPrefix, intervalNumber)].Release();
         }
 
-        private static void Terminate2(pm.Model model, pm.Transact transact)
+        private void generator_Entered(Transact obj)
         {
-            model.Facilities[facility2Name].Release(transact);
-            model.Terminate(1);
+            if (intervalCount > 0)
+            {
+                Queues[GetPrefixedName(semaphorePrefix,0)].Enqueue(obj);
+            }
         }
-
-        private static void F2EntryPoint(pm.Model model, pm.Transact transact)
-        {
-            model.Queues[queue2Name].Dequeue(transact);
-            model.Facilities[facility2Name].Seize(transact, Advance2);
-        }
-         */
     }
 }

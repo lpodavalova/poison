@@ -13,7 +13,6 @@ namespace Poison.Train
     {
         private const int intervalCount = 100;
         private const string trainGenerator = "train";
-        private const string inputQueue = "inputQueue";
         private const string semaphorePrefix = "semaphore";
         private const string intervalPrefix = "interval";
 
@@ -49,14 +48,12 @@ namespace Poison.Train
 
                 semaphore.Enqueued += semaphore_Enqueued;
                 semaphore.Dequeued += semaphore_Dequeued;
-                semaphore.Dequeueing += semaphore_Dequeueing;
 
                 modelObjects.Queues.Add(semaphore);
 
                 Facility interval = new Facility(GetPrefixedName(intervalPrefix,i));
 
                 interval.Released += interval_Released;
-                interval.Releasing += interval_Releasing;
             }
         }
 
@@ -88,35 +85,38 @@ namespace Poison.Train
 
         void interval_Released(Facility interval, Transact train)
         {
-            throw new NotImplementedException();
-        }
+            int intervalNum = ExtractNumber(interval.Name);
+            int nextIntervalNum = intervalNum + 1;
 
-        void interval_Releasing(Facility interval, Transact train)
-        {
-            throw new NotImplementedException();
+            // последний интервал? выводим поезд из системы
+            if (nextIntervalNum >= intervalCount)
+            {
+                return;
+            }
+
+            Queues[GetPrefixedName(semaphorePrefix, nextIntervalNum)].Enqueue(train);
+
+            Queue currentSemaphore = Queues[GetPrefixedName(semaphorePrefix, intervalNum)];
+
+            // нет поездов на семафоре? выходим
+            if (currentSemaphore.Count <= 0)
+            {
+                return;
+            }
+
+            // пытаемся обработать следующий поезд, стоящий на семафоре
+            ProceedNextTrain(currentSemaphore);
         }
 
         private void semaphore_Dequeued(Queue semaphore, Transact train)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void semaphore_Dequeueing(Queue semaphore, Transact train)
         {
             int intervalNumber = ExtractNumber(semaphore.Name);
 
             Facilities[GetPrefixedName(intervalPrefix, intervalNumber)].Seize(train);
         }
-       
-        private void semaphore_Enqueued(Queue obj, Transact train)
-        {
-            // Если новый транзакт оказывается не первым на семафоре (то есть есть другие транзакты,
-            // ожидающие своей обработки, то транзакт остается в очереди ждать
-            if (obj.Count > 1)
-            {
-                return;
-            }
 
+        private void ProceedNextTrain(Queue obj)
+        {
             // извлекаем номер интервала
             int intervalNum = ExtractNumber(obj.Name);
 
@@ -126,7 +126,7 @@ namespace Poison.Train
             // интервал занят? остаемся в очереди
             if (currentInterval.State == FacilityState.Busy)
             {
-                return; 
+                return;
             }
 
             // интервал последний? проходим на полном ходу
@@ -153,15 +153,27 @@ namespace Poison.Train
 
             // на следующем интерале есть поезд, либо поезд стоит перед следующим семафором?
             // едем медленно
-            if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < intervalCount && 
+            if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < intervalCount &&
                 Queues[GetPrefixedName(semaphorePrefix, intervalNum + 2)].Count > 0)
             {
                 Advance(intervalStdDevTime60, interval_Train, intervalNum);
                 return;
-            }                
+            }
 
             // едем быстро, преград нет
             Advance(intervalStdDevTime80, interval_Train, intervalNum);
+        }
+       
+        private void semaphore_Enqueued(Queue obj, Transact train)
+        {
+            // Если новый транзакт оказывается не первым на семафоре (то есть есть другие транзакты,
+            // ожидающие своей обработки, то транзакт остается в очереди ждать
+            if (obj.Count > 1)
+            {
+                return;
+            }
+
+            ProceedNextTrain(obj);
         }
 
         private void interval_Train(object param)

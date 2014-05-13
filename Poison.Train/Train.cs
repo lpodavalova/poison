@@ -54,6 +54,8 @@ namespace Poison.Train
                 Facility interval = new Facility(GetPrefixedName(intervalPrefix,i));
 
                 interval.Released += interval_Released;
+
+                modelObjects.Facilities.Add(interval);
             }
         }
 

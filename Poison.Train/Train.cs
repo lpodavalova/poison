@@ -16,6 +16,9 @@ namespace Poison.Train
         private const string semaphorePrefix = "semaphore";
         private const string intervalPrefix = "interval";
 
+        private const double generatingAvgTime = 3.0;
+        private const double generatingStdDevTime = 2.0;
+
         private const double intervalAvgTime80 = 1.5;
         private const double intervalAvgTime60 = 2.0;
         private const double intervalStdDevTime80 = 0.1;
@@ -36,7 +39,7 @@ namespace Poison.Train
 
         protected override void Describe(ModelObjects modelObjects)
         {
-            Generator generator = new Generator(trainGenerator, new Normal(10, 2));
+            Generator generator = new Generator(trainGenerator, new Normal(generatingAvgTime, generatingStdDevTime));
 
             generator.Entered += generator_Entered;
 

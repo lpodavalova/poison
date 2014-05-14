@@ -22,8 +22,8 @@ namespace Poison.Stochastic
 {
     public class Normal : IDistribution
     {
-        private bool isSpareReady = false;
-        private double spare;
+        private bool _IsSpareReady = false;
+        private double _Spare;
 
         public double Mean
         {
@@ -50,10 +50,10 @@ namespace Poison.Stochastic
 
         public double Next()
         {
-            if (isSpareReady)
+            if (_IsSpareReady)
             {
-                isSpareReady = false;
-                return spare * StdDev + Mean;
+                _IsSpareReady = false;
+                return _Spare * StdDev + Mean;
             }
             else
             {
@@ -66,8 +66,8 @@ namespace Poison.Stochastic
                 } while (s >= 1 || s == 0);
 
                 double mul = Math.Sqrt(-2.0 * Math.Log(s) / s);
-                spare = v * mul;
-                isSpareReady = true;
+                _Spare = v * mul;
+                _IsSpareReady = true;
                 return Mean + StdDev * u * mul;
             }
         }

@@ -24,7 +24,7 @@ namespace Poison.Modelling
 {
     public class Queue : IModelEntity
     {
-        private readonly Queue<TransactQueueInfo> queue = new Queue<TransactQueueInfo>();
+        private readonly Queue<TransactQueueInfo> _Queue = new Queue<TransactQueueInfo>();
 
         public Queue(string name)
         {
@@ -61,7 +61,7 @@ namespace Poison.Modelling
 
             //UpdateLastCountChanged();
 
-            queue.Enqueue(new TransactQueueInfo(transact, Model.Time));
+            _Queue.Enqueue(new TransactQueueInfo(transact, Model.Time));
             //EntryCount++;
 
             //if (Max < queue.Count)
@@ -155,7 +155,7 @@ namespace Poison.Modelling
 
         public Transact Dequeue()
         {
-            TransactQueueInfo info = queue.Peek();
+            TransactQueueInfo info = _Queue.Peek();
 
             OnDequeueing(info.Transact);
 
@@ -167,7 +167,7 @@ namespace Poison.Modelling
             //UpdateLastCountChanged();
             //sumTransactQueueStayTime += Model.Time - info.QueuingTime;
 
-            queue.Dequeue();
+            _Queue.Dequeue();
             Transact transact = info.Transact;
 
             OnDequeued(transact);
@@ -212,7 +212,7 @@ namespace Poison.Modelling
         {
             get
             {
-                return queue.Count;
+                return _Queue.Count;
             }
         }
 
@@ -274,7 +274,7 @@ namespace Poison.Modelling
 
         internal void Init()
         {
-            queue.Clear();
+            _Queue.Clear();
             OnInit();
             //Max = 0;
             //EntryCount = 0;

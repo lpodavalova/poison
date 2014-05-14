@@ -24,8 +24,8 @@ namespace Poison.Modelling
 {
     public class ModelEntityCollection<T> : IEnumerable<T>, IEnumerable where T : IModelEntity 
     {
-        private Model model;
-        private Dictionary<string, T> dictionary;
+        private Model _Model;
+        private Dictionary<string, T> _Dictionary;
 
         public ModelEntityCollection(Model model)
         {
@@ -34,15 +34,15 @@ namespace Poison.Modelling
                 throw new ArgumentNullException("model");
             }
 
-            this.model = model;
-            dictionary = new Dictionary<string, T>();
+            this._Model = model;
+            _Dictionary = new Dictionary<string, T>();
         }
 
         public T this[string key]
         {
             get
             {
-                return dictionary[key];
+                return _Dictionary[key];
             }
         }
 
@@ -92,7 +92,7 @@ namespace Poison.Modelling
                 throw new ArgumentNullException("item");
             }
             
-            if (dictionary.ContainsKey(item.Name))
+            if (_Dictionary.ContainsKey(item.Name))
             {
                 throw new ArgumentException("Item with specified name already exists");
             }
@@ -102,49 +102,49 @@ namespace Poison.Modelling
                 throw new ArgumentException("Model field of adding item should be null");
             }
 
-            dictionary.Add(item.Name, item);
-            item.Model = model;
+            _Dictionary.Add(item.Name, item);
+            item.Model = _Model;
 
             OnAdded(item);
         }
 
         public void Clear()
         {
-            foreach (T item in dictionary.Values)
+            foreach (T item in _Dictionary.Values)
             {
                 item.Model = null;
             }
 
-            dictionary.Clear();
+            _Dictionary.Clear();
 
             OnCleared();
         }
 
         public bool ContainsName(string name)
         {
-            return dictionary.ContainsKey(name);
+            return _Dictionary.ContainsKey(name);
         }
 
         public int Count
         {
             get 
             {
-                return dictionary.Count;
+                return _Dictionary.Count;
             }
         }
 
         public bool Remove(string name)
         {
-            if (!dictionary.ContainsKey(name))
+            if (!_Dictionary.ContainsKey(name))
             {
                 return false;
             }
 
-            T item = dictionary[name];
+            T item = _Dictionary[name];
 
             item.Model = null;
 
-            bool result = dictionary.Remove(name);
+            bool result = _Dictionary.Remove(name);
 
             OnRemoved(item);
 
@@ -153,7 +153,7 @@ namespace Poison.Modelling
 
         public IEnumerator<T> GetEnumerator()
         {
-            return dictionary.Values.GetEnumerator();
+            return _Dictionary.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

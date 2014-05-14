@@ -26,9 +26,9 @@ namespace Poison.Statistics
 {
     public class ModelStat
     {
-        private IDictionary<string, QueueStat> queueStatCollection;
-        private IDictionary<string, GeneratorStat> generatorStatCollection;
-        private IDictionary<string, FacilityStat> facilityStatCollection;
+        private IDictionary<string, QueueStat> _QueueStatCollection;
+        private IDictionary<string, GeneratorStat> _GeneratorStatCollection;
+        private IDictionary<string, FacilityStat> _FacilityStatCollection;
 
         public ModelStat(Model model)
         {

@@ -24,72 +24,72 @@ namespace Poison.Collections
 {
     class PriorityQueue<T> : IEnumerable<T>, ICollection, IEnumerable where T : IComparable<T>
     {
-        private List<T> queue;
+        private List<T> _Queue;
 
         public PriorityQueue()
         {
-            queue = new List<T>();
+            _Queue = new List<T>();
         }
 
         public PriorityQueue(int capacity)
         {
-            queue = new List<T>(capacity);
+            _Queue = new List<T>(capacity);
         }
 
         public void Clear()
         {
-            queue.Clear();
+            _Queue.Clear();
         }
 
         public bool Contains(T item)
         {
-            return queue.Contains(item);
+            return _Queue.Contains(item);
         }
 
         public void Enqueue(T item)
         {
-            int index = queue.BinarySearch(item);
+            int index = _Queue.BinarySearch(item);
 
             if (index < 0)
             {
                 index = ~index;
             }
 
-            queue.Insert(index, item);
+            _Queue.Insert(index, item);
         }
 
         public T Dequeue()
         {
             T item = Peek();
 
-            queue.RemoveAt(0);
+            _Queue.RemoveAt(0);
 
             return item;
         }
 
         public T Peek()
         {
-            if (queue.Count == 0)
+            if (_Queue.Count == 0)
             {
                 throw new InvalidOperationException("Queue is empty");
             }
 
-            return queue[0];
+            return _Queue[0];
         }
 
         public T[] ToArray()
         {
-            return queue.ToArray();
+            return _Queue.ToArray();
         }
 
         public void TrimExcess()
         {
-            queue.TrimExcess();
+            _Queue.TrimExcess();
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return ((IEnumerable<T>)queue).GetEnumerator();
+            return ((IEnumerable<T>)_Queue).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -99,14 +99,14 @@ namespace Poison.Collections
 
         void ICollection.CopyTo(Array array, int index)
         {
-            ((ICollection)queue).CopyTo(array, index);
+            ((ICollection)_Queue).CopyTo(array, index);
         }
 
         public int Count
         {
             get
             {
-                return queue.Count;
+                return _Queue.Count;
             }
         }
 
@@ -114,7 +114,7 @@ namespace Poison.Collections
         {
             get 
             {
-                return ((ICollection)queue).IsSynchronized;
+                return ((ICollection)_Queue).IsSynchronized;
             }
         }
 
@@ -122,7 +122,7 @@ namespace Poison.Collections
         {
             get
             {
-                return ((ICollection)queue).SyncRoot;
+                return ((ICollection)_Queue).SyncRoot;
             }
         }
     }

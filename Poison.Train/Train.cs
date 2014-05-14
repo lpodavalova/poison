@@ -11,50 +11,50 @@ namespace Poison.Train
 {
     public class Train : Model
     {
-        private const int intervalCount = 100;
-        private const string trainGenerator = "train";
-        private const string semaphorePrefix = "semaphore";
-        private const string intervalPrefix = "interval";
+        private const int _IntervalCount = 100;
+        private const string _TrainGenerator = "train";
+        private const string _SemaphorePrefix = "semaphore";
+        private const string _IntervalPrefix = "interval";
 
-        private const double generatingAvgTime = 3.0;
-        private const double generatingStdDevTime = 2.0;
+        private const double _GeneratingAvgTime = 3.0;
+        private const double _GeneratingStdDevTime = 2.0;
 
-        private const double intervalAvgTime80 = 1.5;
-        private const double intervalAvgTime60 = 2.0;
-        private const double intervalStdDevTime80 = 0.1;
-        private const double intervalStdDevTime60 = 0.1;
+        private const double _IntervalAvgTime80 = 1.5;
+        private const double _IntervalAvgTime60 = 2.0;
+        private const double _IntervalStdDevTime80 = 0.1;
+        private const double _IntervalStdDevTime60 = 0.1;
 
-        private IDistribution intervalTime80 = new Normal(intervalAvgTime80, intervalStdDevTime80);
-        private IDistribution intervalTime60 = new Normal(intervalAvgTime60, intervalStdDevTime60);
+        private IDistribution _IntervalTime80 = new Normal(_IntervalAvgTime80, _IntervalStdDevTime80);
+        private IDistribution _IntervalTime60 = new Normal(_IntervalAvgTime60, _IntervalStdDevTime60);
 
         /// <summary>
         /// Время жизни модели в минутах.
         /// </summary>
-        private int lifeTime = 60 * 24 * 7;
+        private int _LifeTime = 60 * 24 * 7;
         
         protected override bool IsAlive()
         {
-            return Time <= lifeTime;
+            return Time <= _LifeTime;
         }
 
         protected override void Describe()
         {
-            Generator generator = new Generator(trainGenerator, new Normal(generatingAvgTime, generatingStdDevTime));
+            Generator generator = new Generator(_TrainGenerator, new Normal(_GeneratingAvgTime, _GeneratingStdDevTime));
 
             generator.Entered += generator_Entered;
 
             Generators.Add(generator);
 
-            for (int i = 0; i < intervalCount; i++)
+            for (int i = 0; i < _IntervalCount; i++)
             {
-                Queue semaphore = new Queue(GetPrefixedName(semaphorePrefix,i));
+                Queue semaphore = new Queue(GetPrefixedName(_SemaphorePrefix,i));
 
                 semaphore.Enqueued += semaphore_Enqueued;
                 semaphore.Dequeued += semaphore_Dequeued;
 
                 Queues.Add(semaphore);
 
-                Facility interval = new Facility(GetPrefixedName(intervalPrefix,i));
+                Facility interval = new Facility(GetPrefixedName(_IntervalPrefix,i));
 
                 interval.Released += interval_Released;
 
@@ -94,14 +94,14 @@ namespace Poison.Train
             int nextIntervalNum = intervalNum + 1;
 
             // последний интервал? выводим поезд из системы
-            if (nextIntervalNum >= intervalCount)
+            if (nextIntervalNum >= _IntervalCount)
             {
                 return;
             }
 
-            Queues[GetPrefixedName(semaphorePrefix, nextIntervalNum)].Enqueue(train);
+            Queues[GetPrefixedName(_SemaphorePrefix, nextIntervalNum)].Enqueue(train);
 
-            Queue currentSemaphore = Queues[GetPrefixedName(semaphorePrefix, intervalNum)];
+            Queue currentSemaphore = Queues[GetPrefixedName(_SemaphorePrefix, intervalNum)];
 
             // нет поездов на семафоре? выходим
             if (currentSemaphore.Count <= 0)
@@ -117,7 +117,7 @@ namespace Poison.Train
         {
             int intervalNumber = ExtractNumber(semaphore.Name);
 
-            Facilities[GetPrefixedName(intervalPrefix, intervalNumber)].Seize(train);
+            Facilities[GetPrefixedName(_IntervalPrefix, intervalNumber)].Seize(train);
         }
 
         private void ProceedNextTrain(Queue obj)
@@ -126,7 +126,7 @@ namespace Poison.Train
             int intervalNum = ExtractNumber(obj.Name);
 
             // получаем текущий интервал
-            Facility currentInterval = Facilities[GetPrefixedName(intervalPrefix, intervalNum)];
+            Facility currentInterval = Facilities[GetPrefixedName(_IntervalPrefix, intervalNum)];
 
             // интервал занят? остаемся в очереди
             if (currentInterval.State == FacilityState.Busy)
@@ -135,16 +135,16 @@ namespace Poison.Train
             }
 
             // интервал последний? проходим на полном ходу
-            if (intervalNum + 1 >= intervalCount)
+            if (intervalNum + 1 >= _IntervalCount)
             {
                 obj.Dequeue();
-                Advance(intervalStdDevTime80, interval_Train, intervalNum);
+                Advance(_IntervalStdDevTime80, interval_Train, intervalNum);
 
                 return;
             }
 
-            Queue nextSemaphore = Queues[GetPrefixedName(semaphorePrefix, intervalNum + 1)];
-            Facility nextInterval = Facilities[GetPrefixedName(intervalPrefix, intervalNum + 1)];
+            Queue nextSemaphore = Queues[GetPrefixedName(_SemaphorePrefix, intervalNum + 1)];
+            Facility nextInterval = Facilities[GetPrefixedName(_IntervalPrefix, intervalNum + 1)];
 
             // перед следующим семафором, а значит на текущем интервале стоит другой поезд? остаемся в очереди
             if (nextSemaphore.Count > 0)
@@ -158,15 +158,15 @@ namespace Poison.Train
 
             // на следующем интерале есть поезд, либо поезд стоит перед следующим семафором?
             // едем медленно
-            if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < intervalCount &&
-                Queues[GetPrefixedName(semaphorePrefix, intervalNum + 2)].Count > 0)
+            if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < _IntervalCount &&
+                Queues[GetPrefixedName(_SemaphorePrefix, intervalNum + 2)].Count > 0)
             {
-                Advance(intervalStdDevTime60, interval_Train, intervalNum);
+                Advance(_IntervalStdDevTime60, interval_Train, intervalNum);
                 return;
             }
 
             // едем быстро, преград нет
-            Advance(intervalStdDevTime80, interval_Train, intervalNum);
+            Advance(_IntervalStdDevTime80, interval_Train, intervalNum);
         }
        
         private void semaphore_Enqueued(Queue obj, Transact train)
@@ -185,14 +185,14 @@ namespace Poison.Train
         {
             int intervalNumber = (int)param;
 
-            Facilities[GetPrefixedName(intervalPrefix, intervalNumber)].Release();
+            Facilities[GetPrefixedName(_IntervalPrefix, intervalNumber)].Release();
         }
 
         private void generator_Entered(Transact obj)
         {
-            if (intervalCount > 0)
+            if (_IntervalCount > 0)
             {
-                Queues[GetPrefixedName(semaphorePrefix,0)].Enqueue(obj);
+                Queues[GetPrefixedName(_SemaphorePrefix,0)].Enqueue(obj);
             }
         }
     }

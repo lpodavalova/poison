@@ -25,13 +25,13 @@ namespace Poison.Stochastic
 {
     public static class RandomFactory
     {
-        private static IRandom random = new Random();
+        private static IRandom _Random = new Random();
 
         public static IRandom Randomizer
         {
             get
             {
-                return random;
+                return _Random;
             }
             set
             {
@@ -40,7 +40,7 @@ namespace Poison.Stochastic
                     throw new ArgumentNullException("value");
                 }
 
-                random = value;
+                _Random = value;
             }
         }
     }

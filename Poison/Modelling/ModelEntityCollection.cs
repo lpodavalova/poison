@@ -46,6 +46,45 @@ namespace Poison.Modelling
             }
         }
 
+        private event EventHandler<ModelEntityCollection<T>,T> _Added;
+        public event EventHandler<ModelEntityCollection<T>,T> Added
+        {
+            add { _Added += value; }
+            remove { _Added -= value; }
+        }
+
+        private void OnAdded(T item)
+        {
+            if (_Added != null)
+                _Added(this,item);
+        }
+
+        private event EventHandler<ModelEntityCollection<T>,T> _Removed;
+        public event EventHandler<ModelEntityCollection<T>,T> Removed
+        {
+            add { _Removed += value; }
+            remove { _Removed -= value; }
+        }
+
+        private void OnRemoved(T item)
+        {
+            if (_Removed != null)
+                _Removed(this,item);
+        }
+
+        private event EventHandler<ModelEntityCollection<T>> _Cleared;
+        public event EventHandler<ModelEntityCollection<T>> Cleared
+        {
+            add { _Cleared += value; }
+            remove { _Cleared -= value; }
+        }
+
+        private void OnCleared()
+        {
+            if (_Cleared != null)
+                _Cleared(this);
+        }
+
         public void Add(T item)
         {
             if (item == null)
@@ -65,6 +104,8 @@ namespace Poison.Modelling
 
             dictionary.Add(item.Name, item);
             item.Model = model;
+
+            OnAdded(item);
         }
 
         public void Clear()
@@ -75,6 +116,8 @@ namespace Poison.Modelling
             }
 
             dictionary.Clear();
+
+            OnCleared();
         }
 
         public bool ContainsName(string name)
@@ -97,9 +140,15 @@ namespace Poison.Modelling
                 return false;
             }
 
-            dictionary[name].Model = null;
+            T item = dictionary[name];
 
-            return dictionary.Remove(name);
+            item.Model = null;
+
+            bool result = dictionary.Remove(name);
+
+            OnRemoved(item);
+
+            return result;
         }
 
         public IEnumerator<T> GetEnumerator()

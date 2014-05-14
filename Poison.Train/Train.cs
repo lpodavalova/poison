@@ -37,13 +37,13 @@ namespace Poison.Train
             return Time <= lifeTime;
         }
 
-        protected override void Describe(ModelObjects modelObjects)
+        protected override void Describe()
         {
             Generator generator = new Generator(trainGenerator, new Normal(generatingAvgTime, generatingStdDevTime));
 
             generator.Entered += generator_Entered;
 
-            modelObjects.Generators.Add(generator);
+            Generators.Add(generator);
 
             for (int i = 0; i < intervalCount; i++)
             {
@@ -52,13 +52,13 @@ namespace Poison.Train
                 semaphore.Enqueued += semaphore_Enqueued;
                 semaphore.Dequeued += semaphore_Dequeued;
 
-                modelObjects.Queues.Add(semaphore);
+                Queues.Add(semaphore);
 
                 Facility interval = new Facility(GetPrefixedName(intervalPrefix,i));
 
                 interval.Released += interval_Released;
 
-                modelObjects.Facilities.Add(interval);
+                Facilities.Add(interval);
             }
         }
 

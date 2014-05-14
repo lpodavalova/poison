@@ -22,15 +22,15 @@ namespace Poison.Test.Modelling
             return transactionCount >= 0;
         }
 
-        protected override void Describe(ModelObjects modelObjects)
+        protected override void Describe()
         {
-            modelObjects.Queues.Add(new Queue(queue1));
-            modelObjects.Facilities.Add(new Facility(facility1));
-            modelObjects.Generators.Add(new Generator(generator1, new Normal(10, 0.5)));
+            Queues.Add(new Queue(queue1));
+            Facilities.Add(new Facility(facility1));
+            Generators.Add(new Generator(generator1, new Normal(10, 0.5)));
 
-            modelObjects.Generators[generator1].Entered += TestModel_Entered;
-            modelObjects.Queues[queue1].Enqueued += TestModel_Enqueued;
-            modelObjects.Facilities[facility1].Released += TestModel_Released;
+            Generators[generator1].Entered += TestModel_Entered;
+            Queues[queue1].Enqueued += TestModel_Enqueued;
+            Facilities[facility1].Released += TestModel_Released;
         }
 
         private void TestModel_Entered(Transact transact)

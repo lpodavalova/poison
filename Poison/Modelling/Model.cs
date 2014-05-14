@@ -25,19 +25,11 @@ namespace Poison.Modelling
 {
     public abstract class Model
     {
-        private QueueCollection queues;
-        private FacilityCollection facilities;
-        private GeneratorCollection generators;
-
         public Model()
         {
-            queues = new QueueCollection(this);
-            facilities = new FacilityCollection(this);
-            generators = new GeneratorCollection(this);
-
-            Queues = new ReadOnlyQueueCollection(queues);
-            Facilities = new ReadOnlyFacilityCollection(facilities);
-            Generators = new ReadOnlyGeneratorCollection(generators);
+            Queues = new QueueCollection(this);
+            Facilities = new FacilityCollection(this);
+            Generators = new GeneratorCollection(this);
 
             EventQueue = new PriorityQueue<Event>();
 
@@ -50,19 +42,19 @@ namespace Poison.Modelling
             private set;
         }
 
-        protected ReadOnlyQueueCollection Queues
+        protected QueueCollection Queues
         {
             get;
             private set;
         }
 
-        protected ReadOnlyFacilityCollection Facilities
+        protected FacilityCollection Facilities
         {
             get;
             private set;
         }
 
-        protected ReadOnlyGeneratorCollection Generators
+        protected GeneratorCollection Generators
         {
             get;
             private set;
@@ -76,57 +68,32 @@ namespace Poison.Modelling
 
         public void Simulate()
         {
-            ModelObjects objects = new ModelObjects(this);
             Time = 0;
 
-            queues.Clear();
-            facilities.Clear();
-            generators.Clear();
+            Queues.Clear();
+            Facilities.Clear();
+            Generators.Clear();
 
             EventQueue.Clear();
 
-            Describe(objects);
+            Describe();
 
-            Facility[] facilityArray = objects.Facilities.ToArray();
-            objects.Facilities.Clear();
-
-            foreach (Facility f in facilityArray)
-            {
-                facilities.Add(f);
-            }
-
-            Generator[] GeneratorArray = objects.Generators.ToArray();
-            objects.Generators.Clear();
-
-            foreach (Generator g in GeneratorArray)
-            {
-                generators.Add(g);
-            }
-
-            Queue[] queueArray = objects.Queues.ToArray();
-            objects.Queues.Clear();
-
-            foreach (Queue q in queueArray)
-            {
-                queues.Add(q);
-            }
-
-            foreach (Facility f in facilities)
+            foreach (Facility f in Facilities)
             {
                 f.Init();
             }
 
-            foreach (Generator g in generators)
+            foreach (Generator g in Generators)
             {
                 g.Init();
             }
 
-            foreach (Queue q in queues)
+            foreach (Queue q in Queues)
             {
                 q.Init();
             }
 
-            foreach (Generator g in generators)
+            foreach (Generator g in Generators)
             {
                 g.GenerateEvent();                
             }
@@ -136,17 +103,17 @@ namespace Poison.Modelling
                 ProcessEvent();
             }
 
-            foreach (Queue q in queues)
+            foreach (Queue q in Queues)
             {
                 q.Final();
             }
 
-            foreach (Generator g in generators)
+            foreach (Generator g in Generators)
             {
                 g.Final();
             }
 
-            foreach (Facility f in facilities)
+            foreach (Facility f in Facilities)
             {
                 f.Final();
             }
@@ -154,7 +121,7 @@ namespace Poison.Modelling
 
         protected abstract bool IsAlive();
 
-        protected abstract void Describe(ModelObjects modelObjects);
+        protected abstract void Describe();
 
         protected void Advance(double value, EventHandler eventHandler, object param = null)
         {

@@ -16,6 +16,7 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using Poison.Modelling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,9 @@ namespace Poison.Statistics
 {
     public class FacilityStat
     {
+        public FacilityStat(Facility facility)
+        {
+
+        }
     }
 }

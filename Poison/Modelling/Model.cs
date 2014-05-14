@@ -42,19 +42,19 @@ namespace Poison.Modelling
             private set;
         }
 
-        protected QueueCollection Queues
+        public QueueCollection Queues
         {
             get;
             private set;
         }
 
-        protected FacilityCollection Facilities
+        public FacilityCollection Facilities
         {
             get;
             private set;
         }
 
-        protected GeneratorCollection Generators
+        public GeneratorCollection Generators
         {
             get;
             private set;

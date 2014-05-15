@@ -66,56 +66,103 @@ namespace Poison.Modelling
             private set;            
         }
 
+        private event EventHandler<Model> _Init;
+        public event EventHandler<Model> Initialization
+        {
+            add { _Init += value; }
+            remove { _Init -= value; }
+        }
+
+        private void OnInit()
+        {
+            if (_Init != null)
+                _Init(this);
+        }
+
+        private event EventHandler<Model> _Final;
+        public event EventHandler<Model> Finalization
+        {
+            add { _Final += value; }
+            remove { _Final -= value; }
+        }
+
+        private void OnFinal()
+        {
+            if (_Final != null)
+                _Final(this);
+        }
+
         public void Simulate()
         {
-            Time = 0;
-
-            Queues.Clear();
-            Facilities.Clear();
-            Generators.Clear();
-
-            EventQueue.Clear();
-
-            Describe();
-
-            foreach (Facility f in Facilities)
+            try
             {
-                f.Init();
+                Time = 0;
+
+                Queues.Clear();
+                Facilities.Clear();
+                Generators.Clear();
+
+                EventQueue.Clear();
+
+                Describe();
+
+                Queues.Locked = true;
+                Facilities.Locked = true;
+                Generators.Locked = true;
+
+                OnInit();
+
+                foreach (Facility f in Facilities)
+                {
+                    f.Init();
+                }
+
+                foreach (Generator g in Generators)
+                {
+                    g.Init();
+                }
+
+                foreach (Queue q in Queues)
+                {
+                    q.Init();
+                }
+
+                foreach (Generator g in Generators)
+                {
+                    g.GenerateEvent();
+                }
+
+                while (IsAlive() && EventQueue.Count > 0)
+                {
+                    ProcessEvent();
+                }
+
+                foreach (Queue q in Queues)
+                {
+                    q.Final();
+                }
+
+                foreach (Generator g in Generators)
+                {
+                    g.Final();
+                }
+
+                foreach (Facility f in Facilities)
+                {
+                    f.Final();
+                }
+
+                OnFinal();
             }
-
-            foreach (Generator g in Generators)
+            catch
             {
-                g.Init();
+                throw;
             }
-
-            foreach (Queue q in Queues)
+            finally
             {
-                q.Init();
-            }
-
-            foreach (Generator g in Generators)
-            {
-                g.GenerateEvent();                
-            }
-
-            while (IsAlive() && EventQueue.Count > 0)
-            {
-                ProcessEvent();
-            }
-
-            foreach (Queue q in Queues)
-            {
-                q.Final();
-            }
-
-            foreach (Generator g in Generators)
-            {
-                g.Final();
-            }
-
-            foreach (Facility f in Facilities)
-            {
-                f.Final();
+                Queues.Locked = false;
+                Facilities.Locked = false;
+                Generators.Locked = false;
             }
         }
 

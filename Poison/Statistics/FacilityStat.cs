@@ -17,6 +17,7 @@
 */
 
 using Poison.Modelling;
+using Poison.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,72 @@ namespace Poison.Statistics
 {
     public class FacilityStat
     {
-        public FacilityStat(Facility facility)
-        {
+        private Facility _Facility;
+        private ModelStat _ModelStat;
 
+        public FacilityStat(ModelStat modelStat, Facility facility)
+        {
+            if (modelStat == null)
+            {
+                throw new ArgumentNullException("modelStat");
+            }
+
+            if (facility == null)
+            {
+                throw new ArgumentNullException("facility");
+            }
+
+            _ModelStat = modelStat;
+            _Facility = facility;
+
+            facility.Initialization += facility_Initialization;
+            facility.Finalization += facility_Finalization;
         }
+
+        private void facility_Initialization(Facility facility)
+        {
+            Entries = 0;
+            seizeTime = 0.0;
+            LastOwner = null;
+        }
+
+        private void facility_Finalization(Facility facility)
+        {
+            if (facility.State != FacilityState.Free)
+            {
+                seizeTime += facility.Model.Time - timeStart;
+            }
+        }
+
+        public int Entries
+        {
+            get;
+            internal set;
+        }
+
+        public double AverageTime
+        {
+            get
+            {
+                return seizeTime.SmartDiv(Entries);
+            }
+        }
+
+        public double Utilization
+        {
+            get
+            {
+                return seizeTime / _Facility.Model.Time;
+            }
+        }
+
+        public Transact LastOwner
+        {
+            get;
+            private set;
+        }
+
+        private double seizeTime;
+        private double timeStart;
     }
 }

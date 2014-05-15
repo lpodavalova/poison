@@ -77,41 +77,6 @@ namespace Poison.Modelling
             private set;
         }
 
-        //#region Statistics
-
-        //public int Entries
-        //{
-        //    get;
-        //    internal set;
-        //}
-
-        //public double AverageTime
-        //{
-        //    get
-        //    {
-        //        return seizeTime.SmartDiv(Entries);
-        //    }
-        //}
-
-        //public double Utilization
-        //{
-        //    get
-        //    {
-        //        return seizeTime / Model.Time;
-        //    }
-        //}
-
-        //public Transact LastOwner
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        //private double seizeTime;
-        //private double timeStart;
-
-        //#endregion
-
         private event EventHandler<Facility> _Init;
         public event EventHandler<Facility> Initialization
         {
@@ -240,18 +205,11 @@ namespace Poison.Modelling
         internal void Init()
         {
             OnInit();
-            //Entries = 0;
-            //seizeTime = 0.0;
-            //LastOwner = null;
         }
 
         internal void Final()
         {
             OnFinal();
-        //    if (State != FacilityState.Free)
-        //    {
-        //        seizeTime += Model.Time - timeStart;
-        //    }
         }
     }
 }

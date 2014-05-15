@@ -28,9 +28,9 @@ namespace Poison.Statistics
 {
     public class ModelStat
     {
-        private IDictionary<string, QueueStat> _QueueStatCollection = new Dictionary<string, QueueStat>();
-        private IDictionary<string, GeneratorStat> _GeneratorStatCollection = new Dictionary<string, GeneratorStat>();
-        private IDictionary<string, FacilityStat> _FacilityStatCollection = new Dictionary<string, FacilityStat>();
+        private IDictionary<string, QueueStat> _QueueStatCollection;
+        private IDictionary<string, GeneratorStat> _GeneratorStatCollection;
+        private IDictionary<string, FacilityStat> _FacilityStatCollection;
 
         public IReadOnlyDictionary<string, QueueStat> QueueStatCollection
         {
@@ -57,123 +57,37 @@ namespace Poison.Statistics
                 throw new ArgumentNullException("model");
             }
 
+            _QueueStatCollection = new Dictionary<string, QueueStat>();
+            _GeneratorStatCollection = new Dictionary<string, GeneratorStat>();
+            _FacilityStatCollection = new Dictionary<string, FacilityStat>();
+
             QueueStatCollection = new ReadOnlyDictionary<string, QueueStat>(_QueueStatCollection);
             GeneratorStatCollection = new ReadOnlyDictionary<string, GeneratorStat>(_GeneratorStatCollection);
             FacilityStatCollection = new ReadOnlyDictionary<string, FacilityStat>(_FacilityStatCollection);
 
+            model.Initialization += model_Initialization;
+        }
+
+        private void model_Initialization(Model model)
+        {
+            _QueueStatCollection.Clear();
+            _FacilityStatCollection.Clear();
+            _GeneratorStatCollection.Clear();
+
             foreach (Queue queue in model.Queues)
             {
-                _QueueStatCollection[queue.Name] = new QueueStat(queue);
+                _QueueStatCollection[queue.Name] = new QueueStat(this,queue);
             }
 
             foreach (Facility facility in model.Facilities)
             {
-                _FacilityStatCollection[facility.Name] = new FacilityStat(facility);
+                _FacilityStatCollection[facility.Name] = new FacilityStat(this,facility);
             }
 
             foreach (Generator generator in model.Generators)
             {
-                _GeneratorStatCollection[generator.Name] = new GeneratorStat(generator);
+                _GeneratorStatCollection[generator.Name] = new GeneratorStat(this,generator);
             }
-
-            model.Queues.Added += Queues_Added;
-            model.Queues.Removed += Queues_Removed;
-            model.Queues.Cleared += Queues_Cleared;
-
-            model.Generators.Added += Generators_Added;
-            model.Generators.Removed += Generators_Removed;
-            model.Generators.Cleared += Generators_Cleared;
-
-            model.Facilities.Added += Facilities_Added;
-            model.Facilities.Removed += Facilities_Removed;
-            model.Facilities.Cleared += Facilities_Cleared;
-        }
-
-        private void Facilities_Removed(ModelEntityCollection<Facility> facilityCollection, Facility facility)
-        {
-            RemoveFacility(facility.Name);
-        }
-
-        private void Facilities_Added(ModelEntityCollection<Facility> facilityCollection, Facility facility)
-        {
-            _FacilityStatCollection[facility.Name] = new FacilityStat(facility);
-        }
-
-        private void Facilities_Cleared(ModelEntityCollection<Facility> obj)
-        {
-            foreach (string facilityName in _FacilityStatCollection.Keys.ToArray())
-            {
-                RemoveFacility(facilityName);
-            }
-        }
-
-        private void RemoveFacility(string facilityName)
-        {
-            FacilityStat oldFacilityStat = _FacilityStatCollection[facilityName];
-
-            string newName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", facilityName, Guid.NewGuid());
-
-            _FacilityStatCollection.Remove(facilityName);
-
-            _FacilityStatCollection[newName] = oldFacilityStat;
-        }
-
-        private void Generators_Removed(ModelEntityCollection<Generator> generatorCollection, Generator generator)
-        {
-            RemoveGenerator(generator.Name);
-        }
-
-        private void Generators_Added(ModelEntityCollection<Generator> generatorCollection, Generator generator)
-        {
-            _GeneratorStatCollection[generator.Name] = new GeneratorStat(generator);
-        }
-
-        private void Generators_Cleared(ModelEntityCollection<Generator> obj)
-        {
-            foreach (string generatorName in _GeneratorStatCollection.Keys.ToArray())
-            {
-                RemoveGenerator(generatorName);
-            }
-        }
-
-        private void RemoveGenerator(string generatorName)
-        {
-            GeneratorStat oldGeneratorStat = _GeneratorStatCollection[generatorName];
-
-            string newName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", generatorName, Guid.NewGuid());
-
-            _GeneratorStatCollection.Remove(generatorName);
-
-            _GeneratorStatCollection[newName] = oldGeneratorStat;
-        }
-
-        private void Queues_Removed(ModelEntityCollection<Queue> queueCollection, Queue queue)
-        {
-            RemoveQueue(queue.Name);
-        }
-
-        private void Queues_Added(ModelEntityCollection<Queue> queueCollection, Queue queue)
-        {
-            _QueueStatCollection[queue.Name] = new QueueStat(queue);
-        }
-
-        private void Queues_Cleared(ModelEntityCollection<Queue> queueCollection)
-        {
-            foreach (string queueName in _QueueStatCollection.Keys.ToArray())
-            {
-                RemoveQueue(queueName);
-            }
-        }
-
-        private void RemoveQueue(string queueName)
-        {
-            QueueStat oldQueueStat = _QueueStatCollection[queueName];
-
-            string newName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}", queueName, Guid.NewGuid());
-
-            _QueueStatCollection.Remove(queueName);
-
-            _QueueStatCollection[newName] = oldQueueStat;
         }
     }
 }

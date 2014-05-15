@@ -26,9 +26,40 @@ namespace Poison.Statistics
 {
     public class GeneratorStat
     {
-        public GeneratorStat(Generator generator)
-        {
+        private ModelStat _ModelStat;
 
+        public GeneratorStat(ModelStat modelStat, Generator generator)
+        {
+            if (modelStat == null)
+            {
+                throw new ArgumentNullException("modelStat");
+            }
+
+            if (generator == null)
+            {
+                throw new ArgumentNullException("generator");
+            }
+
+            _ModelStat = modelStat;
+
+            generator.Initialization += generator_Initialization;
+            generator.Entered += generator_Entered;
+        }
+
+        public int GeneratedTransactCount
+        {
+            get;
+            private set;
+        }
+
+        private void generator_Entered(Transact obj)
+        {
+            GeneratedTransactCount++;
+        }
+
+        private void generator_Initialization(Generator obj)
+        {
+            GeneratedTransactCount = 0;
         }
     }
 }

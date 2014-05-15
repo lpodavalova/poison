@@ -24,8 +24,16 @@ namespace Poison.Modelling
 {
     public class ModelEntityCollection<T> : IEnumerable<T>, IEnumerable where T : IModelEntity 
     {
+        private const string _CannotModifyCollectionMessage = "Cannot modify collection when it's locked.";
+
         private Model _Model;
         private Dictionary<string, T> _Dictionary;
+
+        public bool Locked
+        {
+            get;
+            internal set;
+        }
 
         public ModelEntityCollection(Model model)
         {
@@ -36,6 +44,7 @@ namespace Poison.Modelling
 
             this._Model = model;
             _Dictionary = new Dictionary<string, T>();
+            Locked = false;
         }
 
         public T this[string key]
@@ -44,49 +53,15 @@ namespace Poison.Modelling
             {
                 return _Dictionary[key];
             }
-        }
-
-        private event EventHandler<ModelEntityCollection<T>,T> _Added;
-        public event EventHandler<ModelEntityCollection<T>,T> Added
-        {
-            add { _Added += value; }
-            remove { _Added -= value; }
-        }
-
-        private void OnAdded(T item)
-        {
-            if (_Added != null)
-                _Added(this,item);
-        }
-
-        private event EventHandler<ModelEntityCollection<T>,T> _Removed;
-        public event EventHandler<ModelEntityCollection<T>,T> Removed
-        {
-            add { _Removed += value; }
-            remove { _Removed -= value; }
-        }
-
-        private void OnRemoved(T item)
-        {
-            if (_Removed != null)
-                _Removed(this,item);
-        }
-
-        private event EventHandler<ModelEntityCollection<T>> _Cleared;
-        public event EventHandler<ModelEntityCollection<T>> Cleared
-        {
-            add { _Cleared += value; }
-            remove { _Cleared -= value; }
-        }
-
-        private void OnCleared()
-        {
-            if (_Cleared != null)
-                _Cleared(this);
-        }
+        }      
 
         public void Add(T item)
         {
+            if (Locked)
+            {
+                throw new InvalidOperationException(_CannotModifyCollectionMessage);
+            }
+
             if (item == null)
             {
                 throw new ArgumentNullException("item");
@@ -104,20 +79,21 @@ namespace Poison.Modelling
 
             _Dictionary.Add(item.Name, item);
             item.Model = _Model;
-
-            OnAdded(item);
         }
 
         public void Clear()
         {
+            if (Locked)
+            {
+                throw new InvalidOperationException(_CannotModifyCollectionMessage);
+            }
+
             foreach (T item in _Dictionary.Values)
             {
                 item.Model = null;
             }
 
             _Dictionary.Clear();
-
-            OnCleared();
         }
 
         public bool ContainsName(string name)
@@ -135,6 +111,11 @@ namespace Poison.Modelling
 
         public bool Remove(string name)
         {
+            if (Locked)
+            {
+                throw new InvalidOperationException(_CannotModifyCollectionMessage);
+            }
+
             if (!_Dictionary.ContainsKey(name))
             {
                 return false;
@@ -145,8 +126,6 @@ namespace Poison.Modelling
             item.Model = null;
 
             bool result = _Dictionary.Remove(name);
-
-            OnRemoved(item);
 
             return result;
         }

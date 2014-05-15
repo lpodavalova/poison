@@ -26,9 +26,21 @@ namespace Poison.Statistics
 {
     public class QueueStat
     {
-        public QueueStat(Queue queue)
-        {
+        private ModelStat _ModelStat;
 
+        public QueueStat(ModelStat modelStat, Queue queue)
+        {
+            if (modelStat == null)
+            {
+                throw new ArgumentNullException("modelStat");
+            }
+
+            if (queue == null)
+            {
+                throw new ArgumentNullException("queue");
+            }
+
+            _ModelStat = modelStat;
         }
     }
 }

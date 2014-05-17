@@ -113,7 +113,7 @@ namespace Poison.Train
             ProceedNextTrain(currentSemaphore);
         }
 
-        private void semaphore_Dequeued(Queue semaphore, Transact train)
+        private void semaphore_Dequeued(Queue semaphore, Transact train, double timeInQueue)
         {
             int intervalNumber = ExtractNumber(semaphore.Name);
 

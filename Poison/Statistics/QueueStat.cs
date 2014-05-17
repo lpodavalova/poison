@@ -16,6 +16,7 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+using Poison.Extensions;
 using Poison.Modelling;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,12 @@ namespace Poison.Statistics
 {
     public class QueueStat
     {
+        private double lastCountChangedTime;
+        private double sumCountTimeMul;
+        private double sumTransactQueueStayTime;
+
         private ModelStat _ModelStat;
+        private Queue _Queue;
 
         public QueueStat(ModelStat modelStat, Queue queue)
         {
@@ -41,6 +47,85 @@ namespace Poison.Statistics
             }
 
             _ModelStat = modelStat;
+            _Queue = queue;
+
+            _Queue.Enqueueing += _Queue_Enqueueing;
+            _Queue.Enqueued += _Queue_Enqueued;
+            _Queue.Dequeueing += _Queue_Dequeueing;
+        }
+        
+        private void _Queue_Dequeueing(Queue queue, Transact transact, double timeInQueue)
+        {
+            if (timeInQueue == 0.0)
+            {
+                EntryCountZero++;
+            }
+
+            UpdateLastCountChanged();
+            sumTransactQueueStayTime += timeInQueue;
+        }
+
+        private void _Queue_Enqueued(Queue queue, Transact transact)
+        {
+            EntryCount++;
+
+            if (Max < _Queue.Count)
+            {
+                Max = _Queue.Count;
+            }
+        }
+
+        private void _Queue_Enqueueing(Queue queue, Transact transact)
+        {
+            UpdateLastCountChanged();
+        }
+
+        public int Max
+        {
+            get;
+            private set;
+        }
+
+        public int EntryCount
+        {
+            get;
+            private set;
+        }
+
+        public int EntryCountZero
+        {
+            get;
+            private set;
+        }
+
+        public double AverageCount
+        {
+            get
+            {
+                return sumCountTimeMul / _ModelStat.Model.Time;
+            }
+        }
+
+        public double AverageTime
+        {
+            get
+            {
+                return sumTransactQueueStayTime.SmartDiv(EntryCount);
+            }
+        }
+
+        public double AverageTimeNonZero
+        {
+            get
+            {
+                return sumTransactQueueStayTime.SmartDiv(EntryCount - EntryCountZero);
+            }
+        }
+
+        private void UpdateLastCountChanged()
+        {
+            sumCountTimeMul += _Queue.Count * (_ModelStat.Model.Time - lastCountChangedTime);
+            lastCountChangedTime = _ModelStat.Model.Time;
         }
     }
 }

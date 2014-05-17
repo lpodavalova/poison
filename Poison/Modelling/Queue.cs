@@ -55,24 +55,11 @@ namespace Poison.Modelling
                 throw new ArgumentNullException("transact");
             }
 
-            //bool fireNewItem = queue.Count == 0;
-
-            OnEnqueueing(transact);
-
-            //UpdateLastCountChanged();
+            OnEnqueueing(transact);                       
 
             _Queue.Enqueue(new TransactQueueInfo(transact, Model.Time));
-            //EntryCount++;
 
-            //if (Max < queue.Count)
-            //{
-            //    Max = queue.Count;
-            //}
-
-            //if (fireNewItem)
-            //{
             OnEnqueued(transact);
-            //}
         }
 
         private event EventHandler<Queue> _Init;
@@ -127,55 +114,44 @@ namespace Poison.Modelling
                 _Enqueueing(this, transact);
         }
 
-        private event EventHandler<Queue, Transact> _Dequeued;
-        public event EventHandler<Queue, Transact> Dequeued
+        private event EventHandler<Queue, Transact, double> _Dequeued;
+        public event EventHandler<Queue, Transact, double> Dequeued
         {
             add { _Dequeued += value; }
             remove { _Dequeued -= value; }
         }
 
-        private void OnDequeued(Transact transact)
+        private void OnDequeued(Transact transact, double timeInQueue)
         {
             if (_Dequeued != null)
-                _Dequeued(this, transact);
+                _Dequeued(this, transact, timeInQueue);
         }
 
-        private event EventHandler<Queue, Transact> _Dequeueing;
-        public event EventHandler<Queue, Transact> Dequeueing
+        private event EventHandler<Queue, Transact, double> _Dequeueing;
+        public event EventHandler<Queue, Transact, double> Dequeueing
         {
             add { _Dequeueing += value; }
             remove { _Dequeueing -= value; }
         }
 
-        private void OnDequeueing(Transact transact)
+        private void OnDequeueing(Transact transact, double timeInQueue)
         {
             if (_Dequeueing != null)
-                _Dequeueing(this, transact);
+                _Dequeueing(this, transact, timeInQueue);
         }
 
         public Transact Dequeue()
         {
             TransactQueueInfo info = _Queue.Peek();
 
-            OnDequeueing(info.Transact);
+            double timeInQueue = Model.Time - info.QueuingTime;
 
-            //if (info.QueuingTime == Model.Time)
-            //{
-            //    EntryCountZero++;
-            //}
-
-            //UpdateLastCountChanged();
-            //sumTransactQueueStayTime += Model.Time - info.QueuingTime;
+            OnDequeueing(info.Transact, timeInQueue);
 
             _Queue.Dequeue();
             Transact transact = info.Transact;
 
-            OnDequeued(transact);
-
-            //if (queue.Count > 0)
-            //{   
-            //    Enqueued();
-            //}
+            OnDequeued(transact, timeInQueue);
 
             return transact;
         }
@@ -215,62 +191,6 @@ namespace Poison.Modelling
                 return _Queue.Count;
             }
         }
-
-        //#region Statistics
-
-        //public int Max
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        //public int EntryCount
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        //public int EntryCountZero
-        //{
-        //    get;
-        //    private set;
-        //}
-
-        //public double AverageCount
-        //{
-        //    get
-        //    {
-        //        return sumCountTimeMul / Model.Time;
-        //    }
-        //}
-
-        //public double AverageTime
-        //{
-        //    get
-        //    {
-        //        return sumTransactQueueStayTime.SmartDiv(EntryCount);
-        //    }
-        //}
-
-        //public double AverageTimeNonZero
-        //{
-        //    get
-        //    {
-        //        return sumTransactQueueStayTime.SmartDiv(EntryCount - EntryCountZero);
-        //    }
-        //}
-
-        //private double lastCountChangedTime;
-        //private double sumCountTimeMul;
-        //private double sumTransactQueueStayTime;
-
-        //private void UpdateLastCountChanged()
-        //{
-        //    sumCountTimeMul += queue.Count * (Model.Time - lastCountChangedTime);
-        //    lastCountChangedTime = Model.Time;
-        //}
-
-        //#endregion
 
         internal void Init()
         {

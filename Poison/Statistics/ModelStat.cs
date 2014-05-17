@@ -50,12 +50,20 @@ namespace Poison.Statistics
             private set;
         }
 
+        public Model Model
+        {
+            get;
+            private set;
+        }
+
         public ModelStat(Model model)
         {
             if (model == null)
             {
                 throw new ArgumentNullException("model");
             }
+
+            Model = model;
 
             _QueueStatCollection = new Dictionary<string, QueueStat>();
             _GeneratorStatCollection = new Dictionary<string, GeneratorStat>();

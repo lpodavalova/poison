@@ -168,12 +168,7 @@ namespace Poison.Modelling
             }
 
             OnSeizing(transact);
-
-            //Model.EventQueue.Enqueue(new Event(Model.Time + advanceTime, Release));
-
-            //Entries++;
-            //timeStart = Model.Time;
-            //LastOwner = transact;
+            
 
             State = FacilityState.Busy;
             Owner = transact;
@@ -191,8 +186,6 @@ namespace Poison.Modelling
             OnReleasing(Owner);
 
             State = FacilityState.Free;
-
-            //seizeTime += Model.Time - timeStart;
 
             Transact transact = Owner;
             Owner = null;

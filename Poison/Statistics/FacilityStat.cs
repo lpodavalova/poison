@@ -47,6 +47,20 @@ namespace Poison.Statistics
 
             facility.Initialization += facility_Initialization;
             facility.Finalization += facility_Finalization;
+            facility.Seizing += facility_Seizing;
+            facility.Releasing += facility_Releasing;
+        }
+
+        private void facility_Releasing(Facility facility, Transact transact)
+        {
+            seizeTime += _ModelStat.Model.Time - timeStart;
+        }
+
+        private void facility_Seizing(Facility facility, Transact transact)
+        {
+            Entries++;
+            timeStart = _ModelStat.Model.Time;
+            LastOwner = transact;
         }
 
         private void facility_Initialization(Facility facility)
@@ -60,7 +74,7 @@ namespace Poison.Statistics
         {
             if (facility.State != FacilityState.Free)
             {
-                seizeTime += facility.Model.Time - timeStart;
+                seizeTime += _ModelStat.Model.Time - timeStart;
             }
         }
 

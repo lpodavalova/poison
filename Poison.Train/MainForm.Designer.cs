@@ -1,6 +1,6 @@
 ﻿namespace Poison.Train
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -41,7 +41,8 @@
             this.tb_Stat.Multiline = true;
             this.tb_Stat.Name = "tb_Stat";
             this.tb_Stat.ReadOnly = true;
-            this.tb_Stat.Size = new System.Drawing.Size(391, 589);
+            this.tb_Stat.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tb_Stat.Size = new System.Drawing.Size(467, 589);
             this.tb_Stat.TabIndex = 0;
             // 
             // bt_Run
@@ -50,21 +51,21 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.bt_Run.Location = new System.Drawing.Point(12, 12);
             this.bt_Run.Name = "bt_Run";
-            this.bt_Run.Size = new System.Drawing.Size(391, 23);
+            this.bt_Run.Size = new System.Drawing.Size(467, 23);
             this.bt_Run.TabIndex = 1;
             this.bt_Run.Text = "Run";
             this.bt_Run.UseVisualStyleBackColor = true;
             this.bt_Run.Click += new System.EventHandler(this.bt_Run_Click);
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(415, 642);
+            this.ClientSize = new System.Drawing.Size(491, 642);
             this.Controls.Add(this.bt_Run);
             this.Controls.Add(this.tb_Stat);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "MainForm";
+            this.Text = "Train Model Sample";
             this.ResumeLayout(false);
             this.PerformLayout();
 

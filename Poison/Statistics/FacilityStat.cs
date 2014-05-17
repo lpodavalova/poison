@@ -27,8 +27,17 @@ namespace Poison.Statistics
 {
     public class FacilityStat
     {
-        private Facility _Facility;
-        private ModelStat _ModelStat;
+        public Facility Facility
+        {
+            get;
+            private set;
+        }
+
+        public ModelStat ModelStat
+        {
+            get;
+            private set;
+        }
 
         public FacilityStat(ModelStat modelStat, Facility facility)
         {
@@ -42,8 +51,8 @@ namespace Poison.Statistics
                 throw new ArgumentNullException("facility");
             }
 
-            _ModelStat = modelStat;
-            _Facility = facility;
+            ModelStat = modelStat;
+            Facility = facility;
 
             facility.Initialization += facility_Initialization;
             facility.Finalization += facility_Finalization;
@@ -53,13 +62,13 @@ namespace Poison.Statistics
 
         private void facility_Releasing(Facility facility, Transact transact)
         {
-            seizeTime += _ModelStat.Model.Time - timeStart;
+            seizeTime += ModelStat.Model.Time - timeStart;
         }
 
         private void facility_Seizing(Facility facility, Transact transact)
         {
             Entries++;
-            timeStart = _ModelStat.Model.Time;
+            timeStart = ModelStat.Model.Time;
             LastOwner = transact;
         }
 
@@ -74,7 +83,7 @@ namespace Poison.Statistics
         {
             if (facility.State != FacilityState.Free)
             {
-                seizeTime += _ModelStat.Model.Time - timeStart;
+                seizeTime += ModelStat.Model.Time - timeStart;
             }
         }
 
@@ -96,7 +105,7 @@ namespace Poison.Statistics
         {
             get
             {
-                return seizeTime / _Facility.Model.Time;
+                return seizeTime / Facility.Model.Time;
             }
         }
 

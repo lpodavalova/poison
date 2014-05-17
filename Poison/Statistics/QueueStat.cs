@@ -31,9 +31,18 @@ namespace Poison.Statistics
         private double sumCountTimeMul;
         private double sumTransactQueueStayTime;
 
-        private ModelStat _ModelStat;
-        private Queue _Queue;
+        public ModelStat ModelStat
+        {
+            get;
+            private set;
+        }
 
+        public Queue Queue
+        {
+            get;
+            private set;
+        }
+        
         public QueueStat(ModelStat modelStat, Queue queue)
         {
             if (modelStat == null)
@@ -46,12 +55,12 @@ namespace Poison.Statistics
                 throw new ArgumentNullException("queue");
             }
 
-            _ModelStat = modelStat;
-            _Queue = queue;
+            ModelStat = modelStat;
+            Queue = queue;
 
-            _Queue.Enqueueing += _Queue_Enqueueing;
-            _Queue.Enqueued += _Queue_Enqueued;
-            _Queue.Dequeueing += _Queue_Dequeueing;
+            Queue.Enqueueing += _Queue_Enqueueing;
+            Queue.Enqueued += _Queue_Enqueued;
+            Queue.Dequeueing += _Queue_Dequeueing;
         }
         
         private void _Queue_Dequeueing(Queue queue, Transact transact, double timeInQueue)
@@ -69,9 +78,9 @@ namespace Poison.Statistics
         {
             EntryCount++;
 
-            if (Max < _Queue.Count)
+            if (Max < Queue.Count)
             {
-                Max = _Queue.Count;
+                Max = Queue.Count;
             }
         }
 
@@ -102,7 +111,7 @@ namespace Poison.Statistics
         {
             get
             {
-                return sumCountTimeMul / _ModelStat.Model.Time;
+                return sumCountTimeMul / ModelStat.Model.Time;
             }
         }
 
@@ -124,8 +133,8 @@ namespace Poison.Statistics
 
         private void UpdateLastCountChanged()
         {
-            sumCountTimeMul += _Queue.Count * (_ModelStat.Model.Time - lastCountChangedTime);
-            lastCountChangedTime = _ModelStat.Model.Time;
+            sumCountTimeMul += Queue.Count * (ModelStat.Model.Time - lastCountChangedTime);
+            lastCountChangedTime = ModelStat.Model.Time;
         }
     }
 }

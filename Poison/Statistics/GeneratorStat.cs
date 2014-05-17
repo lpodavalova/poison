@@ -26,7 +26,17 @@ namespace Poison.Statistics
 {
     public class GeneratorStat
     {
-        private ModelStat _ModelStat;
+        public ModelStat ModelStat
+        {
+            get;
+            private set;
+        }
+
+        public Generator Generator
+        {
+            get;
+            private set;
+        }
 
         public GeneratorStat(ModelStat modelStat, Generator generator)
         {
@@ -40,7 +50,8 @@ namespace Poison.Statistics
                 throw new ArgumentNullException("generator");
             }
 
-            _ModelStat = modelStat;
+            ModelStat = modelStat;
+            Generator = generator;
 
             generator.Initialization += generator_Initialization;
             generator.Entered += generator_Entered;

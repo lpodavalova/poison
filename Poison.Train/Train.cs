@@ -16,8 +16,8 @@ namespace Poison.Train
         private const string _SemaphorePrefix = "semaphore";
         private const string _IntervalPrefix = "interval";
 
-        private const double _GeneratingAvgTime = 3.0;
-        private const double _GeneratingStdDevTime = 2.0;
+    //    private const double _GeneratingAvgTime = 3.0;
+    //    private const double _GeneratingStdDevTime = 2.0;
 
         private const double _IntervalAvgTime80 = 1.5;
         private const double _IntervalAvgTime60 = 2.0;
@@ -37,6 +37,30 @@ namespace Poison.Train
             return Time <= _LifeTime;
         }
 
+        private double _GeneratingAvgTime = 3.0;
+        public double GeneratingAvgTime
+        {
+            get
+            {
+                return _GeneratingAvgTime;
+            }
+            set
+            {
+                if (Math.Sign(value) < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", "Generating average time cannot be less than zero.");
+                }
+            }
+        }
+
+        public double GeneratingStdDevTime
+        {
+            get
+            {
+                return _GeneratingAvgTime * 0.1; // 10%
+            }            
+        }
+
         public int InputTrainCount
         {
             get;
@@ -52,7 +76,7 @@ namespace Poison.Train
         protected override void Describe()
         {
             Initialization += Train_Initialization;
-            Generator generator = new Generator(_TrainGenerator, new Normal(_GeneratingAvgTime, _GeneratingStdDevTime));
+            Generator generator = new Generator(_TrainGenerator, new Normal(_GeneratingAvgTime, GeneratingStdDevTime));
 
             generator.Entered += generator_Entered;
 
@@ -157,7 +181,7 @@ namespace Poison.Train
             if (intervalNum + 1 >= _IntervalCount)
             {
                 obj.Dequeue();
-                Advance(_IntervalStdDevTime80, interval_Train, intervalNum);
+                Advance(_IntervalTime80.Next(), interval_Train, intervalNum);
 
                 return;
             }
@@ -180,12 +204,12 @@ namespace Poison.Train
             if (nextInterval.State == FacilityState.Busy || intervalNum + 2 < _IntervalCount &&
                 Queues[GetPrefixedName(_SemaphorePrefix, intervalNum + 2)].Count > 0)
             {
-                Advance(_IntervalStdDevTime60, interval_Train, intervalNum);
+                Advance(_IntervalTime60.Next(), interval_Train, intervalNum);
                 return;
             }
 
             // едем быстро, преград нет
-            Advance(_IntervalStdDevTime80, interval_Train, intervalNum);
+            Advance(_IntervalTime80.Next(), interval_Train, intervalNum);
         }
        
         private void semaphore_Enqueued(Queue obj, Transact train)

@@ -28,10 +28,10 @@ namespace Poison.Train
 
             train.Simulate();
 
-            tb_Stat.Text = FormatStatReport(modelStat);
+            tb_Stat.Text = FormatStatReport(modelStat, train);
         }
 
-        private string FormatStatReport(ModelStat modelStat)
+        private string FormatStatReport(ModelStat modelStat, Train train)
         {
             StringBuilder builder = new StringBuilder();
 
@@ -72,6 +72,11 @@ namespace Poison.Train
                 builder.AppendLine(string.Format(CultureInfo.CurrentCulture,"QUEUE AVE. TIME (-0): {0}", queueStat.AverageTimeNonZero));
                 builder.AppendLine();
             }
+
+            builder.AppendLine();
+
+            builder.AppendLine(string.Format("Count of input trains: {0}",train.InputTrainCount));
+            builder.AppendLine(string.Format("Count of output trains: {0}", train.OutputTrainCount));
 
             builder.AppendLine();
 

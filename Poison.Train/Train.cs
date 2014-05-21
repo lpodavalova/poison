@@ -16,9 +16,6 @@ namespace Poison.Train
         private const string _SemaphorePrefix = "semaphore";
         private const string _IntervalPrefix = "interval";
 
-    //    private const double _GeneratingAvgTime = 3.0;
-    //    private const double _GeneratingStdDevTime = 2.0;
-
         private const double _IntervalAvgTime80 = 1.5;
         private const double _IntervalAvgTime60 = 2.0;
         private const double _IntervalStdDevTime80 = 0.1;

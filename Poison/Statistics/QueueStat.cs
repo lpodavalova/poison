@@ -61,6 +61,17 @@ namespace Poison.Statistics
             Queue.Enqueueing += _Queue_Enqueueing;
             Queue.Enqueued += _Queue_Enqueued;
             Queue.Dequeueing += _Queue_Dequeueing;
+            Queue.Initialization += Queue_Initialization;
+        }
+
+        private void Queue_Initialization(Queue queue)
+        {
+            Max = 0;
+            EntryCount = 0;
+            EntryCountZero = 0;
+            lastCountChangedTime = 0.0;
+            sumCountTimeMul = 0.0;
+            sumTransactQueueStayTime = 0.0;
         }
         
         private void _Queue_Dequeueing(Queue queue, Transact transact, double timeInQueue)

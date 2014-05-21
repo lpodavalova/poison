@@ -196,12 +196,6 @@ namespace Poison.Modelling
         {
             _Queue.Clear();
             OnInit();
-            //Max = 0;
-            //EntryCount = 0;
-            //EntryCountZero = 0;
-            //lastCountChangedTime = 0.0;
-            //sumCountTimeMul = 0.0;
-            //sumTransactQueueStayTime = 0.0;
         }
 
         internal void Final()

@@ -28,26 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tb_Stat = new System.Windows.Forms.TextBox();
             this.bt_Run = new System.Windows.Forms.Button();
             this.tb_GeneratingAvgTime = new System.Windows.Forms.TextBox();
             this.lb_GeneratingAvgTime = new System.Windows.Forms.Label();
             this.lb_Step = new System.Windows.Forms.Label();
             this.tb_Step = new System.Windows.Forms.TextBox();
+            this.pb_Chart1 = new System.Windows.Forms.PictureBox();
+            this.pb_Chart2 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_Chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_Chart2)).BeginInit();
             this.SuspendLayout();
-            // 
-            // tb_Stat
-            // 
-            this.tb_Stat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_Stat.Location = new System.Drawing.Point(12, 87);
-            this.tb_Stat.Multiline = true;
-            this.tb_Stat.Name = "tb_Stat";
-            this.tb_Stat.ReadOnly = true;
-            this.tb_Stat.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tb_Stat.Size = new System.Drawing.Size(467, 543);
-            this.tb_Stat.TabIndex = 0;
             // 
             // bt_Run
             // 
@@ -97,20 +87,47 @@
             this.tb_Step.Size = new System.Drawing.Size(166, 20);
             this.tb_Step.TabIndex = 5;
             // 
+            // pb_Chart1
+            // 
+            this.pb_Chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pb_Chart1.Location = new System.Drawing.Point(12, 87);
+            this.pb_Chart1.Name = "pb_Chart1";
+            this.pb_Chart1.Size = new System.Drawing.Size(467, 269);
+            this.pb_Chart1.TabIndex = 6;
+            this.pb_Chart1.TabStop = false;
+            // 
+            // pb_Chart2
+            // 
+            this.pb_Chart2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pb_Chart2.Location = new System.Drawing.Point(12, 361);
+            this.pb_Chart2.Name = "pb_Chart2";
+            this.pb_Chart2.Size = new System.Drawing.Size(467, 269);
+            this.pb_Chart2.TabIndex = 7;
+            this.pb_Chart2.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(491, 642);
+            this.Controls.Add(this.pb_Chart2);
+            this.Controls.Add(this.pb_Chart1);
             this.Controls.Add(this.tb_Step);
             this.Controls.Add(this.lb_Step);
             this.Controls.Add(this.lb_GeneratingAvgTime);
             this.Controls.Add(this.tb_GeneratingAvgTime);
             this.Controls.Add(this.bt_Run);
-            this.Controls.Add(this.tb_Stat);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "Train Model Sample";
+            this.Text = "Пример модели: эффективность движения поездов";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pb_Chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pb_Chart2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,12 +135,13 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox tb_Stat;
         private System.Windows.Forms.Button bt_Run;
         private System.Windows.Forms.TextBox tb_GeneratingAvgTime;
         private System.Windows.Forms.Label lb_GeneratingAvgTime;
         private System.Windows.Forms.Label lb_Step;
         private System.Windows.Forms.TextBox tb_Step;
+        private System.Windows.Forms.PictureBox pb_Chart1;
+        private System.Windows.Forms.PictureBox pb_Chart2;
     }
 }
 

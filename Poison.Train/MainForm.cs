@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.DataVisualization.Charting;
 using System.Windows.Forms;
 
 namespace Poison.Train
@@ -32,7 +33,7 @@ namespace Poison.Train
             double generatingAvgTime;
             double step;
 
-            if (!double.TryParse(tb_GeneratingAvgTime.Text, out generatingAvgTime) || generatingAvgTime < 9.0 || generatingAvgTime > 20.0)
+            if (!double.TryParse(tb_GeneratingAvgTime.Text, out generatingAvgTime) || generatingAvgTime < 1.0 || generatingAvgTime > 20.0)
             {
                 MessageBox.Show("Начальное значение времени должно быть действительным числом больше 9 и меньше 20.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -47,6 +48,31 @@ namespace Poison.Train
             bt_Run.Enabled = false;
 
             TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTime, step));
+
+            int minInputTrainCount = data.Min(t => t.InputTrainCount);
+            int maxInputTrainCount = data.Max(t => t.InputTrainCount);
+
+            int minOutputTrainCount = data.Min(t => t.OutputTrainCount);
+            int maxOutputTrainCount = data.Max(t => t.OutputTrainCount);
+
+            Chart c = new Chart();
+
+            c.AddLegend();
+
+            c.InitializeChart(pb_Chart1.Height, pb_Chart1.Width, "Входящий поток n, поездов/неделю", "Выходящий поток n, поездов/неделю",100,100,minInputTrainCount,maxInputTrainCount,minOutputTrainCount,maxOutputTrainCount);
+
+            List<DataPoint> points = new List<DataPoint>();
+
+            foreach (TrainModelData item in data)
+            {
+                points.Add(new DataPoint(item.InputTrainCount,item.OutputTrainCount));
+            }
+
+            c.AddSeries("Выходной поток", points, null, SeriesChartType.Line);
+
+            Image img = c.ToImage();
+
+            pb_Chart1.Image = img;
 
             bt_Run.Enabled = true;
         }

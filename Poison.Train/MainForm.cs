@@ -15,17 +15,20 @@ namespace Poison.Train
 {
     public partial class MainForm : Form
     {
+        private Train train;
+
+        private ModelStat modelStat;
+
         public MainForm()
         {
             InitializeComponent();
+
+            train = new Train();
+            modelStat = new ModelStat(train);
         }
 
         private void bt_Run_Click(object sender, EventArgs e)
         {
-            Train train = new Train();
-
-            ModelStat modelStat = new ModelStat(train);
-
             train.Simulate();
 
             tb_Stat.Text = FormatStatReport(modelStat, train);

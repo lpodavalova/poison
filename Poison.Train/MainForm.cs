@@ -49,6 +49,13 @@ namespace Poison.Train
 
             TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTime, step));
 
+            DrawCharts(data);
+
+            bt_Run.Enabled = true;
+        }
+
+        private void DrawCharts(TrainModelData[] data)
+        {
             int minInputTrainCount = data.Min(t => t.InputTrainCount);
             int maxInputTrainCount = data.Max(t => t.InputTrainCount);
 
@@ -59,13 +66,13 @@ namespace Poison.Train
 
             c.AddLegend();
 
-            c.InitializeChart(pb_Chart1.Height, pb_Chart1.Width, "Входящий поток n, поездов/неделю", "Выходящий поток n, поездов/неделю",100,100,minInputTrainCount,maxInputTrainCount,minOutputTrainCount,maxOutputTrainCount);
+            c.InitializeChart(pb_Chart1.Height, pb_Chart1.Width, "Входящий поток n, поездов/неделю", "Выходящий поток n, поездов/неделю", 100, 100, minInputTrainCount, maxInputTrainCount, minOutputTrainCount, maxOutputTrainCount);
 
             List<DataPoint> points = new List<DataPoint>();
 
             foreach (TrainModelData item in data)
             {
-                points.Add(new DataPoint(item.InputTrainCount,item.OutputTrainCount));
+                points.Add(new DataPoint(item.InputTrainCount, item.OutputTrainCount));
             }
 
             c.AddSeries("Выходной поток", points, null, SeriesChartType.Line);
@@ -74,7 +81,35 @@ namespace Poison.Train
 
             pb_Chart1.Image = img;
 
-            bt_Run.Enabled = true;
+            c = new Chart();
+
+            c.AddLegend();
+
+            c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 0.2, 0.2, 1.0, Train._IntervalCount, 0.0, 1.0);
+
+            List<DataPoint>[] pointsNew = new List<DataPoint>[data.Length];
+
+            for (int i = 0; i < pointsNew.Length; i++)
+            {
+                pointsNew[i] = new List<DataPoint>();
+            }
+
+            for (int i = 0; i < pointsNew.Length; i++)
+            {   
+                for (int j = 0; j < data[i].IntervalsUtil.Count; j++)
+                {
+                    pointsNew[i].Add(new DataPoint(j + 1, data[i].IntervalsUtil[j]));
+                }
+            }
+
+            for (int i = 0; i < pointsNew.Length; i++)
+            {
+                c.AddSeries(string.Format("I={0} мин.",data[i].GeneratingAvgTime), pointsNew[i], null, SeriesChartType.Line);
+            }
+
+            img = c.ToImage();
+
+            pb_Chart2.Image = img;
         }
 
         private TrainModelData[] Simulate(double generatingAvgTime, double step)
@@ -96,6 +131,8 @@ namespace Poison.Train
                 {
                     item.IntervalsUtil.Add(modelStat.FacilityStatCollection[Train.GetIntervalName(j)].Utilization);
                 }
+
+                item.GeneratingAvgTime = i;
 
                 data.Add(item);
             }

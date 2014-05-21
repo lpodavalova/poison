@@ -11,7 +11,7 @@ namespace Poison.Train
 {
     public class Train : Model
     {
-        public const int _IntervalCount = 100;
+        public const int _IntervalCount = 16;
         private const string _TrainGenerator = "train";
         private const string _SemaphorePrefix = "semaphore";
         private const string _IntervalPrefix = "interval";
@@ -47,6 +47,8 @@ namespace Poison.Train
                 {
                     throw new ArgumentOutOfRangeException("value", "Generating average time cannot be less than zero.");
                 }
+
+                _GeneratingAvgTime = value;
             }
         }
 

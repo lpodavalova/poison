@@ -45,7 +45,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.bt_Run.Location = new System.Drawing.Point(12, 58);
             this.bt_Run.Name = "bt_Run";
-            this.bt_Run.Size = new System.Drawing.Size(467, 23);
+            this.bt_Run.Size = new System.Drawing.Size(657, 23);
             this.bt_Run.TabIndex = 1;
             this.bt_Run.Text = "Запуск!";
             this.bt_Run.UseVisualStyleBackColor = true;
@@ -57,7 +57,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tb_GeneratingAvgTime.Location = new System.Drawing.Point(313, 6);
             this.tb_GeneratingAvgTime.Name = "tb_GeneratingAvgTime";
-            this.tb_GeneratingAvgTime.Size = new System.Drawing.Size(166, 20);
+            this.tb_GeneratingAvgTime.Size = new System.Drawing.Size(356, 20);
             this.tb_GeneratingAvgTime.TabIndex = 2;
             // 
             // lb_GeneratingAvgTime
@@ -84,7 +84,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tb_Step.Location = new System.Drawing.Point(313, 32);
             this.tb_Step.Name = "tb_Step";
-            this.tb_Step.Size = new System.Drawing.Size(166, 20);
+            this.tb_Step.Size = new System.Drawing.Size(356, 20);
             this.tb_Step.TabIndex = 5;
             // 
             // pb_Chart1
@@ -94,7 +94,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pb_Chart1.Location = new System.Drawing.Point(12, 87);
             this.pb_Chart1.Name = "pb_Chart1";
-            this.pb_Chart1.Size = new System.Drawing.Size(467, 269);
+            this.pb_Chart1.Size = new System.Drawing.Size(657, 323);
             this.pb_Chart1.TabIndex = 6;
             this.pb_Chart1.TabStop = false;
             // 
@@ -105,7 +105,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pb_Chart2.Location = new System.Drawing.Point(12, 361);
             this.pb_Chart2.Name = "pb_Chart2";
-            this.pb_Chart2.Size = new System.Drawing.Size(467, 269);
+            this.pb_Chart2.Size = new System.Drawing.Size(657, 323);
             this.pb_Chart2.TabIndex = 7;
             this.pb_Chart2.TabStop = false;
             // 
@@ -113,7 +113,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(491, 642);
+            this.ClientSize = new System.Drawing.Size(681, 696);
             this.Controls.Add(this.pb_Chart2);
             this.Controls.Add(this.pb_Chart1);
             this.Controls.Add(this.tb_Step);

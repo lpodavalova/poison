@@ -8,6 +8,12 @@ namespace Poison.Train
 {
     class TrainModelData
     {
+        public double GeneratingAvgTime
+        {
+            get;
+            set;
+        }
+
         public int InputTrainCount
         {
             get;

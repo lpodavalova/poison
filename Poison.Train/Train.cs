@@ -37,8 +37,21 @@ namespace Poison.Train
             return Time <= _LifeTime;
         }
 
+        public int InputTrainCount
+        {
+            get;
+            private set;
+        }
+
+        public int OutputTrainCount
+        {
+            get;
+            private set;
+        }
+
         protected override void Describe()
         {
+            Initialization += Train_Initialization;
             Generator generator = new Generator(_TrainGenerator, new Normal(_GeneratingAvgTime, _GeneratingStdDevTime));
 
             generator.Entered += generator_Entered;
@@ -60,6 +73,11 @@ namespace Poison.Train
 
                 Facilities.Add(interval);
             }
+        }
+
+        private void Train_Initialization(Model obj)
+        {
+            InputTrainCount = OutputTrainCount = 0;
         }
 
         private static string GetPrefixedName(string prefix, int i)
@@ -96,6 +114,7 @@ namespace Poison.Train
             // последний интервал? выводим поезд из системы
             if (nextIntervalNum >= _IntervalCount)
             {
+                OutputTrainCount++;
                 return;
             }
 
@@ -190,6 +209,8 @@ namespace Poison.Train
 
         private void generator_Entered(Transact obj)
         {
+            InputTrainCount++;
+
             if (_IntervalCount > 0)
             {
                 Queues[GetPrefixedName(_SemaphorePrefix,0)].Enqueue(obj);

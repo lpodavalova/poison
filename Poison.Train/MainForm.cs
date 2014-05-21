@@ -27,11 +27,54 @@ namespace Poison.Train
             modelStat = new ModelStat(train);
         }
 
-        private void bt_Run_Click(object sender, EventArgs e)
+        private async void bt_Run_Click(object sender, EventArgs e)
         {
-            train.Simulate();
+            double generatingAvgTime;
+            double step;
 
-            tb_Stat.Text = FormatStatReport(modelStat, train);
+            if (!double.TryParse(tb_GeneratingAvgTime.Text, out generatingAvgTime) || generatingAvgTime < 9.0 || generatingAvgTime > 20.0)
+            {
+                MessageBox.Show("Начальное значение времени должно быть действительным числом больше 9 и меньше 20.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!double.TryParse(tb_Step.Text, out step) || step < 0.005)
+            {
+                MessageBox.Show("Шаг действительным числом больше 0,005.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            bt_Run.Enabled = false;
+
+            TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTime, step));
+
+            bt_Run.Enabled = true;
+        }
+
+        private TrainModelData[] Simulate(double generatingAvgTime, double step)
+        {
+            List<TrainModelData> data = new List<TrainModelData>();
+
+            for (double i = generatingAvgTime; i > 0.0; i -= step)
+            {
+                TrainModelData item = new TrainModelData();
+
+                train.GeneratingAvgTime = i;
+
+                train.Simulate();
+
+                item.InputTrainCount = train.InputTrainCount;
+                item.OutputTrainCount = train.OutputTrainCount;
+
+                for (int j = 0; j < Train._IntervalCount; j++)
+                {
+                    item.IntervalsUtil.Add(modelStat.FacilityStatCollection[Train.GetIntervalName(j)].Utilization);
+                }
+
+                data.Add(item);
+            }
+
+            return data.ToArray();
         }
 
         private string FormatStatReport(ModelStat modelStat, Train train)
@@ -84,6 +127,12 @@ namespace Poison.Train
             builder.AppendLine();
 
             return builder.ToString();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            tb_Step.Text = 0.01.ToString();
+            tb_GeneratingAvgTime.Text = 10.0.ToString();
         }
     }
 }

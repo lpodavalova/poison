@@ -11,7 +11,7 @@ namespace Poison.Train
 {
     public class Train : Model
     {
-        private const int _IntervalCount = 100;
+        public const int _IntervalCount = 100;
         private const string _TrainGenerator = "train";
         private const string _SemaphorePrefix = "semaphore";
         private const string _IntervalPrefix = "interval";
@@ -34,7 +34,7 @@ namespace Poison.Train
             return Time <= _LifeTime;
         }
 
-        private double _GeneratingAvgTime = 3.0;
+        private double _GeneratingAvgTime = 3.44;
         public double GeneratingAvgTime
         {
             get
@@ -104,6 +104,16 @@ namespace Poison.Train
         private static string GetPrefixedName(string prefix, int i)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}_{1}", prefix, i);
+        }
+
+        public static string GetSemaphoreName(int i)
+        {
+            return GetPrefixedName(_SemaphorePrefix, i);
+        }
+
+        public static string GetIntervalName(int i)
+        {
+            return GetPrefixedName(_IntervalPrefix, i);
         }
 
         private static int ExtractNumber(string prefixedName, out string prefix)

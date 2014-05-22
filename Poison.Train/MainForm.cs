@@ -30,13 +30,27 @@ namespace Poison.Train
 
         private async void bt_Run_Click(object sender, EventArgs e)
         {
-            double generatingAvgTime;
+            double generatingAvgTimeStart;
+            double generatingAvgTimeStop;
             double step;
 
-            if (!double.TryParse(tb_GeneratingAvgTime.Text, out generatingAvgTime) || generatingAvgTime < 1.0 || generatingAvgTime > 20.0)
+            if (!double.TryParse(tb_GeneratingAvgTimeStart.Text, out generatingAvgTimeStart) || generatingAvgTimeStart < 0.5 || generatingAvgTimeStart > 20.0)
             {
-                MessageBox.Show("Начальное значение времени должно быть действительным числом больше 9 и меньше 20.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Начальное значение времени должно быть действительным числом больше 0,5 и меньше 20.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+
+            if (!double.TryParse(tb_GeneratingAvgTimeStop.Text, out generatingAvgTimeStop) || generatingAvgTimeStop < 0.5 || generatingAvgTimeStop > 20.0)
+            {
+                MessageBox.Show("Конечное значение времени должно быть действительным числом больше 0,5 и меньше 20.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (generatingAvgTimeStart > generatingAvgTimeStop)
+            {
+                double temp = generatingAvgTimeStart;
+                generatingAvgTimeStart = generatingAvgTimeStop;
+                generatingAvgTimeStop = temp;
             }
 
             if (!double.TryParse(tb_Step.Text, out step) || step < 0.005)
@@ -47,7 +61,7 @@ namespace Poison.Train
 
             bt_Run.Enabled = false;
 
-            TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTime, step));
+            TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTimeStart, generatingAvgTimeStop, step));
 
             DrawCharts(data);
 
@@ -112,11 +126,11 @@ namespace Poison.Train
             pb_Chart2.Image = img;
         }
 
-        private TrainModelData[] Simulate(double generatingAvgTime, double step)
+        private TrainModelData[] Simulate(double generatingAvgTimeStart, double generatingAvgTimeStop, double step)
         {
             List<TrainModelData> data = new List<TrainModelData>();
 
-            for (double i = generatingAvgTime; i > 0.0; i -= step)
+            for (double i = generatingAvgTimeStop; i > generatingAvgTimeStart; i -= step)
             {
                 TrainModelData item = new TrainModelData();
 
@@ -194,8 +208,9 @@ namespace Poison.Train
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            tb_Step.Text = 0.01.ToString();
-            tb_GeneratingAvgTime.Text = 10.0.ToString();
+            tb_Step.Text = 0.05.ToString();
+            tb_GeneratingAvgTimeStart.Text = 2.0.ToString();
+            tb_GeneratingAvgTimeStop.Text = 5.0.ToString();
         }
     }
 }

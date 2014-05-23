@@ -95,7 +95,7 @@ namespace Poison.Train
 
             c.AddLegend();
 
-            c.InitializeChart(pb_Chart1.Height, pb_Chart1.Width, "Входящий поток n, поездов/неделю", "Выходящий поток n, поездов/неделю", 100, 100, minInputTrainCount, maxInputTrainCount, minOutputTrainCount, maxOutputTrainCount);
+            c.InitializeChart(pb_Chart1.Height, pb_Chart1.Width, "Входящий поток n, поездов/неделю", "Выходящий поток n, поездов/неделю", 400, 400, minInputTrainCount, maxInputTrainCount, minOutputTrainCount, maxOutputTrainCount);
 
             List<DataPoint> points = new List<DataPoint>();
 
@@ -114,7 +114,9 @@ namespace Poison.Train
 
             c.AddLegend();
 
-            c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 0.2, 0.2, 1.0, Train._IntervalCount, 0.0, 1.0);
+            c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 6.4, 0.2, 1.0, Train._IntervalCount, 0.0, 1.0);
+
+            c.ChartAreas["ChartArea0"].AxisX.LabelStyle.Enabled = false;
 
             List<DataPoint>[] pointsNew = new List<DataPoint>[2];
 
@@ -129,7 +131,8 @@ namespace Poison.Train
             {
                 for (int j = 0; j < data[i].IntervalsUtil.Count; j++)
                 {
-                    pointsNew[k].Add(new DataPoint(j + 1, data[i].IntervalsUtil[j]));
+                    DataPoint dp = new DataPoint(j + 1, data[i].IntervalsUtil[j]);
+                    pointsNew[k].Add(dp);
                 }
 
                 c.AddSeries(string.Format("I={0} мин.", data[i].GeneratingAvgTime), pointsNew[k], null, SeriesChartType.Line);

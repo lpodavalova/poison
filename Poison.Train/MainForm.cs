@@ -77,7 +77,7 @@ namespace Poison.Train
                                
                 DrawCharts(data, maxIndex);
 
-                MessageBox.Show(string.Format("Интервал между поездами, при котором достигается насыщение участов: {0} мин",data[maxIndex].GeneratingAvgTime), "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format("Интервал между поездами, при котором достигается насыщение блок-участов: {0} мин",data[maxIndex].GeneratingAvgTime), "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             bt_Run.Enabled = true;

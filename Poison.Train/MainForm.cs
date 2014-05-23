@@ -55,7 +55,7 @@ namespace Poison.Train
 
             if (!double.TryParse(tb_Step.Text, out step) || step < 0.005)
             {
-                MessageBox.Show("Шаг действительным числом больше 0,005.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Шаг должен быть действительным числом больше 0,005.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -63,12 +63,27 @@ namespace Poison.Train
 
             TrainModelData[] data = await Task.Factory.StartNew<TrainModelData[]>(() => Simulate(generatingAvgTimeStart, generatingAvgTimeStop, step));
 
-            DrawCharts(data);
+            if (data.Length > 0)
+            {
+                int maxIndex = data.Length - 1;
+                for (int i = 1; i < data.Length; i++)
+                {
+                    if (data[i - 1].OutputTrainCount > data[i].OutputTrainCount)
+                    {
+                        maxIndex = i - 1;
+                        break;
+                    }
+                }
+                               
+                DrawCharts(data, maxIndex);
+
+                MessageBox.Show(string.Format("Интервал между поездами, при котором достигается насыщение участов: {0} мин",data[maxIndex].GeneratingAvgTime), "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
             bt_Run.Enabled = true;
         }
 
-        private void DrawCharts(TrainModelData[] data)
+        private void DrawCharts(TrainModelData[] data, int maxIndex)
         {
             int minInputTrainCount = data.Min(t => t.InputTrainCount);
             int maxInputTrainCount = data.Max(t => t.InputTrainCount);
@@ -101,24 +116,25 @@ namespace Poison.Train
 
             c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 0.2, 0.2, 1.0, Train._IntervalCount, 0.0, 1.0);
 
-            List<DataPoint>[] pointsNew = new List<DataPoint>[data.Length];
+            List<DataPoint>[] pointsNew = new List<DataPoint>[2];
 
             for (int i = 0; i < pointsNew.Length; i++)
             {
                 pointsNew[i] = new List<DataPoint>();
             }
 
-            for (int i = 0; i < pointsNew.Length; i++)
-            {   
+            int k = 0;
+
+            foreach (int i in new int[] { 0, maxIndex })
+            {
                 for (int j = 0; j < data[i].IntervalsUtil.Count; j++)
                 {
-                    pointsNew[i].Add(new DataPoint(j + 1, data[i].IntervalsUtil[j]));
+                    pointsNew[k].Add(new DataPoint(j + 1, data[i].IntervalsUtil[j]));
                 }
-            }
 
-            for (int i = 0; i < pointsNew.Length; i++)
-            {
-                c.AddSeries(string.Format("I={0} мин.",data[i].GeneratingAvgTime), pointsNew[i], null, SeriesChartType.Line);
+                c.AddSeries(string.Format("I={0} мин.", data[i].GeneratingAvgTime), pointsNew[k], null, SeriesChartType.Line);
+
+                k++;
             }
 
             img = c.ToImage();

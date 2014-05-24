@@ -148,21 +148,20 @@ namespace Poison.Train
             if (nextIntervalNum >= _IntervalCount)
             {
                 OutputTrainCount++;
-                return;
             }
-
-            Queues[GetPrefixedName(_SemaphorePrefix, nextIntervalNum)].Enqueue(train);
+            else
+            {
+                Queues[GetPrefixedName(_SemaphorePrefix, nextIntervalNum)].Enqueue(train);
+            }
 
             Queue currentSemaphore = Queues[GetPrefixedName(_SemaphorePrefix, intervalNum)];
 
-            // нет поездов на семафоре? выходим
-            if (currentSemaphore.Count <= 0)
+            // есть поезда на семафоре
+            if (currentSemaphore.Count > 0)
             {
-                return;
+                // пытаемся обработать следующий поезд, стоящий на семафоре
+                ProceedNextTrain(currentSemaphore);
             }
-
-            // пытаемся обработать следующий поезд, стоящий на семафоре
-            ProceedNextTrain(currentSemaphore);
         }
 
         private void semaphore_Dequeued(Queue semaphore, Transact train, double timeInQueue)

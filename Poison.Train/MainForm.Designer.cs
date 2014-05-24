@@ -57,9 +57,9 @@
             // 
             this.tb_GeneratingAvgTimeStart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_GeneratingAvgTimeStart.Location = new System.Drawing.Point(313, 6);
+            this.tb_GeneratingAvgTimeStart.Location = new System.Drawing.Point(269, 6);
             this.tb_GeneratingAvgTimeStart.Name = "tb_GeneratingAvgTimeStart";
-            this.tb_GeneratingAvgTimeStart.Size = new System.Drawing.Size(595, 20);
+            this.tb_GeneratingAvgTimeStart.Size = new System.Drawing.Size(639, 20);
             this.tb_GeneratingAvgTimeStart.TabIndex = 2;
             // 
             // lb_GeneratingAvgTimeStart
@@ -67,26 +67,26 @@
             this.lb_GeneratingAvgTimeStart.AutoSize = true;
             this.lb_GeneratingAvgTimeStart.Location = new System.Drawing.Point(12, 9);
             this.lb_GeneratingAvgTimeStart.Name = "lb_GeneratingAvgTimeStart";
-            this.lb_GeneratingAvgTimeStart.Size = new System.Drawing.Size(295, 13);
+            this.lb_GeneratingAvgTimeStart.Size = new System.Drawing.Size(251, 13);
             this.lb_GeneratingAvgTimeStart.TabIndex = 3;
-            this.lb_GeneratingAvgTimeStart.Text = "Начальное значение времени подхода поезда к участку:";
+            this.lb_GeneratingAvgTimeStart.Text = "Начальный средний интервал между поездами:";
             // 
             // lb_Step
             // 
             this.lb_Step.AutoSize = true;
-            this.lb_Step.Location = new System.Drawing.Point(277, 61);
+            this.lb_Step.Location = new System.Drawing.Point(192, 61);
             this.lb_Step.Name = "lb_Step";
-            this.lb_Step.Size = new System.Drawing.Size(30, 13);
+            this.lb_Step.Size = new System.Drawing.Size(71, 13);
             this.lb_Step.TabIndex = 4;
-            this.lb_Step.Text = "Шаг:";
+            this.lb_Step.Text = "Длина шага:";
             // 
             // tb_Step
             // 
             this.tb_Step.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_Step.Location = new System.Drawing.Point(313, 58);
+            this.tb_Step.Location = new System.Drawing.Point(269, 58);
             this.tb_Step.Name = "tb_Step";
-            this.tb_Step.Size = new System.Drawing.Size(595, 20);
+            this.tb_Step.Size = new System.Drawing.Size(639, 20);
             this.tb_Step.TabIndex = 5;
             // 
             // pb_Chart2
@@ -105,17 +105,17 @@
             this.lb_GeneratingAvgTimeStop.AutoSize = true;
             this.lb_GeneratingAvgTimeStop.Location = new System.Drawing.Point(19, 35);
             this.lb_GeneratingAvgTimeStop.Name = "lb_GeneratingAvgTimeStop";
-            this.lb_GeneratingAvgTimeStop.Size = new System.Drawing.Size(288, 13);
+            this.lb_GeneratingAvgTimeStop.Size = new System.Drawing.Size(244, 13);
             this.lb_GeneratingAvgTimeStop.TabIndex = 8;
-            this.lb_GeneratingAvgTimeStop.Text = "Конечное значение времени подхода поезда к участку:";
+            this.lb_GeneratingAvgTimeStop.Text = "Конечный средний интервал между поездами:";
             // 
             // tb_GeneratingAvgTimeStop
             // 
             this.tb_GeneratingAvgTimeStop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tb_GeneratingAvgTimeStop.Location = new System.Drawing.Point(313, 32);
+            this.tb_GeneratingAvgTimeStop.Location = new System.Drawing.Point(269, 32);
             this.tb_GeneratingAvgTimeStop.Name = "tb_GeneratingAvgTimeStop";
-            this.tb_GeneratingAvgTimeStop.Size = new System.Drawing.Size(595, 20);
+            this.tb_GeneratingAvgTimeStop.Size = new System.Drawing.Size(639, 20);
             this.tb_GeneratingAvgTimeStop.TabIndex = 9;
             // 
             // pb_Chart1

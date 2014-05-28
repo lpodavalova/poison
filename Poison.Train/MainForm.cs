@@ -77,7 +77,7 @@ namespace Poison.Train
                                
                 DrawCharts(data, maxIndex);
 
-                MessageBox.Show(string.Format("Интервал между поездами, при котором достигается насыщение блок-участов: {0} мин",data[maxIndex].GeneratingAvgTime), "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(string.Format("Интервал между поездами, при котором достигается насыщение блок-участов: {0} мин\r\nPmax = {1},Pavg = {2}, Pcur = {3}", data[maxIndex].GeneratingAvgTime, data[maxIndex].Pmax, data[maxIndex].Pavg, data[maxIndex].Pcur), "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             bt_Run.Enabled = true;
@@ -156,6 +156,13 @@ namespace Poison.Train
                 train.GeneratingAvgTime = i;
 
                 train.Simulate();
+
+                string inputQueueName = Train.GetSemaphoreName(0);
+                QueueStat inputQueueStat = modelStat.QueueStatCollection[inputQueueName];
+
+                item.Pmax = inputQueueStat.Max;
+                item.Pavg = (int)inputQueueStat.AverageCount;
+                item.Pcur = train.Queues[inputQueueName].Count;
 
                 item.InputTrainCount = train.InputTrainCount;
                 item.OutputTrainCount = train.OutputTrainCount;

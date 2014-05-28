@@ -8,6 +8,24 @@ namespace Poison.Train
 {
     class TrainModelData
     {
+        public int Pmax 
+        {
+            get; 
+            set; 
+        }
+
+        public int Pcur
+        {
+            get;
+            set;
+        }
+
+        public int Pavg
+        {
+            get;
+            set;
+        }
+
         public double GeneratingAvgTime
         {
             get;

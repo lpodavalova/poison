@@ -114,7 +114,7 @@ namespace Poison.Train
 
             c.AddLegend();
 
-            c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 6.4, 0.2, 1.0, Train._IntervalCount, 0.0, 1.0);
+            c.InitializeChart(pb_Chart2.Height, pb_Chart2.Width, "Номер блок-участка", "Коэффициент загрузки блок-участка", 6.4, 0.2, 1.0, Train.IntervalLengthsInKm.Length, 0.0, 1.0);
 
             c.ChartAreas["ChartArea0"].AxisX.LabelStyle.Enabled = false;
 
@@ -167,7 +167,7 @@ namespace Poison.Train
                 item.InputTrainCount = train.InputTrainCount;
                 item.OutputTrainCount = train.OutputTrainCount;
 
-                for (int j = 0; j < Train._IntervalCount; j++)
+                for (int j = 0; j < Train.IntervalLengthsInKm.Length; j++)
                 {
                     item.IntervalsUtil.Add(modelStat.FacilityStatCollection[Train.GetIntervalName(j)].Utilization);
                 }
